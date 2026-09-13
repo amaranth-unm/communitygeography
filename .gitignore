@@ -3,7 +3,7 @@ _site/
 .jekyll-metadata
 .sass-cache/
 .bundle/
-vendor/
+/vendor/
 .migration/
 .DS_Store
 _config.local.yml

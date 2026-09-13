@@ -39,6 +39,8 @@ University analytics runs only in production builds. The original university Goo
 
 ## Publishing
 
+GitHub Pages address: [amaranth.unm.edu/communitygeography](https://amaranth.unm.edu/communitygeography/), using the organization's existing custom domain.
+
 Push to `main`. The `Deploy Jekyll site to Pages` workflow builds, checks, and publishes the site. GitHub Pages must use **GitHub Actions** as its build source. The workflow reads the actual Pages hostname and project path from GitHub, so it also handles an organization with an existing custom domain.
 
 ## Moving the UNM domain
