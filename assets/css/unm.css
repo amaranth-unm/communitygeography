@@ -1,0 +1,102 @@
+/*****************************************************
+UNM BRANDING
+The university utility bar, hanging wordmark, and official footer.
+Loads: pages using unm/page-header-unm.html.
+Used by: unm/nav-unm.html, unm/footer-unm.html, unm/nav-site.html.
+Needs: packaged assets/unm/ images; UNM fonts with Arial fallback.
+Not here: site hero images, reading widths, article typography, or core grids.
+
+All rules are scoped to UNM components. Never redefine .container, .row,
+footer, body, or global headings: Xanthan uses .container as a CSS grid.
+The default 1170px shell and 235 × 70px logo match unm.edu's desktop header.
+*****************************************************/
+:root {
+  --unm-cherry: #ba0c2f;
+  --unm-cherry-dark: #8a0923;
+  --unm-white: #ffffff;
+  --unm-silver: #cccccc;
+  --unm-ink: #333333;
+  --unm-shell-width: 1170px;
+  --unm-gutter: 15px;
+  --unm-bar-height: 32px;
+  --unm-logo-width: 235px;
+  --unm-logo-height: 70px;
+  --unm-space-xs: 5px;
+  --unm-space-sm: 10px;
+  --unm-space-md: 15px;
+  --unm-space-lg: 30px;
+  --unm-border: 1px;
+  --unm-rule: 3px;
+  --unm-radius: 16px;
+  --unm-menu-shadow: 0 4px 12px #00000033;
+  --unm-font: 'Gotham A', 'Gotham B', 'Gotham', Arial, sans-serif;
+}
+.unm-shell { box-sizing: border-box; width: 100%; max-width: var(--unm-shell-width); margin-inline: auto; padding-inline: var(--unm-gutter); }
+.unm-header, .unm-footer { font-family: var(--unm-font); line-height: 1.5; }
+.unm-header *, .unm-footer * { box-sizing: border-box; }
+.unm-header { position: relative; z-index: 110; height: var(--unm-bar-height); background: var(--unm-cherry); color: var(--unm-white); font-size: 13px; }
+.unm-header--standalone { margin-bottom: calc(var(--unm-logo-height) - var(--unm-bar-height)); }
+.unm-header-inner { position: relative; height: 100%; display: flex; justify-content: flex-end; align-items: center; }
+.unm-header .unm-header-logo { position: absolute; inset: 0 auto auto 0; z-index: 2; display: flex; align-items: center; width: var(--unm-logo-width); height: var(--unm-logo-height); padding: 0; background: var(--unm-white); border: 0; border-bottom: var(--unm-rule) solid var(--unm-cherry); text-decoration: none; }
+.unm-header-logo img { display: block; width: 100%; height: auto; max-height: 100%; object-fit: contain; margin: 0; border: 0; }
+.unm-header-tools { display: flex; align-items: center; justify-content: flex-end; gap: var(--unm-space-md); padding-left: var(--unm-logo-width); }
+.unm-utility-links { display: flex; align-items: center; gap: var(--unm-space-lg); }
+.unm-header a, .unm-header summary { color: var(--unm-white); border: 0; font-size: inherit; text-decoration: none; white-space: nowrap; }
+.unm-header a:hover, .unm-header a:focus-visible { color: var(--unm-white); text-decoration: underline; }
+.unm-header details { position: relative; }
+.unm-header summary { cursor: pointer; padding: var(--unm-space-xs) 0; }
+.unm-header summary::marker { font-size: .7em; }
+.unm-menu { position: absolute; inset: 100% 0 auto auto; min-width: 190px; padding: var(--unm-space-sm); color: var(--unm-white); background: var(--unm-cherry-dark); box-shadow: var(--unm-menu-shadow); z-index: 3; }
+.unm-menu a { display: block; padding: var(--unm-space-xs) var(--unm-space-sm); }
+.unm-search { display: flex; align-items: center; width: 200px; height: 24px; margin: 0; padding: 0 var(--unm-space-xs); border-radius: var(--unm-radius); background: var(--unm-white); color: var(--unm-ink); }
+.unm-search input { min-width: 0; width: 100%; height: 100%; padding: 0 var(--unm-space-xs); font: inherit; color: var(--unm-ink); background: transparent; border: 0; border-radius: var(--unm-radius); }
+.unm-search button { display: flex; align-items: center; justify-content: center; flex-shrink: 0; width: 25px; height: 24px; margin: 0; padding: 0; color: var(--unm-ink); background: transparent; border: 0; cursor: pointer; }
+.unm-search input:focus { outline: none; }
+.unm-search:focus-within { outline: 2px solid var(--unm-white); outline-offset: 2px; box-shadow: 0 0 0 2px var(--unm-cherry-dark); }
+.unm-header a:focus-visible, .unm-header summary:focus-visible, .unm-search button:focus-visible, .unm-footer a:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.unm-header .unm-header-logo:focus-visible { outline-color: var(--unm-cherry-dark); outline-offset: -4px; }
+.unm-mobile-tools { display: none; }
+.unm-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+.unm-site .unm-site-nav .top-nav { position: relative; width: 100%; background: var(--bg-nav); }
+.unm-site-nav .top-nav-inner { max-width: var(--unm-shell-width); }
+.unm-footer { color: var(--unm-white); background: var(--unm-cherry) url('../unm/mesa-mountain-red.png') right bottom no-repeat; border-top: var(--unm-rule) solid var(--unm-silver); padding: var(--unm-space-lg) 0; font-size: 13.5px; }
+.unm-footer a, .unm-footer a:visited { color: var(--unm-white); text-decoration: none; border: 0; }
+.unm-footer a:hover, .unm-footer a:focus-visible { color: var(--unm-white); text-decoration: underline; }
+.unm-footer-directory { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(180px, 1.4fr); gap: var(--unm-space-lg); border-block: var(--unm-border) solid var(--unm-silver); padding-block: var(--unm-space-lg); margin-bottom: var(--unm-space-lg); }
+.unm-footer .unm-footer-heading { margin: 0 0 var(--unm-space-sm); padding: 0; color: var(--unm-white); font-family: inherit; font-size: 18px; font-weight: 700; line-height: 1.3; letter-spacing: normal; text-transform: none; border: 0; }
+.unm-footer ul { margin: 0; padding: 0; list-style: none; font-size: inherit; }
+.unm-footer li { margin: 0 0 var(--unm-space-xs); padding: 0; }
+.unm-footer-actions { display: grid; gap: var(--unm-space-sm); align-content: start; }
+.unm-footer .unm-footer-action { display: block; padding: var(--unm-space-sm) var(--unm-space-md); color: var(--unm-ink); background: var(--unm-white); font-size: 19px; border: var(--unm-border) solid var(--unm-silver); }
+.unm-footer-action strong { color: var(--unm-cherry); }
+.unm-footer-bottom { display: grid; grid-template-columns: 2fr 1fr; gap: var(--unm-space-lg); }
+.unm-footer-logo img { display: block; width: 200px; max-width: 100%; height: auto; margin: 0; border: 0; }
+.unm-footer p { margin: var(--unm-space-sm) 0 0; font-size: inherit; line-height: 1.5; }
+.unm-footer-social { display: flex; flex-wrap: wrap; gap: var(--unm-space-md); }
+.unm-footer-social a { display: inline-flex; min-height: 24px; align-items: center; }
+.unm-footer-legal { display: flex; flex-wrap: wrap; column-gap: var(--unm-space-md); row-gap: var(--unm-space-xs); margin-top: var(--unm-space-md); }
+@media (max-width: 991px) {
+  .unm-utility-links { gap: var(--unm-space-md); }
+  .unm-search { width: 145px; }
+  .unm-footer-directory { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .unm-footer-actions { grid-column: 1 / -1; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .unm-header { --unm-logo-width: 180px; --unm-logo-height: 54px; --unm-bar-height: 36px; }
+  .unm-header .unm-header-logo { left: var(--unm-gutter); }
+  /* Xanthan section heroes otherwise retain a 40% title column on phones. */
+  .unm-site .page-header--section .page-header-content { max-width: 100%; }
+  .unm-header-tools { display: none; }
+  .unm-mobile-tools { display: block; }
+  .unm-mobile-tools summary { min-height: 36px; padding: var(--unm-space-xs) var(--unm-space-sm); display: list-item; align-content: center; }
+  .unm-mobile-tools .unm-menu { min-width: 235px; }
+  .unm-mobile-tools .unm-menu a { padding-block: var(--unm-space-sm); }
+  .unm-mobile-tools .unm-search { width: 100%; height: 36px; margin-top: var(--unm-space-sm); }
+  .unm-footer-directory { gap: var(--unm-space-lg) var(--unm-space-md); }
+  .unm-footer-actions, .unm-footer-bottom { grid-template-columns: 1fr; }
+}
+@media print {
+  .unm-header { height: auto; margin: 0; }
+  .unm-header .unm-header-logo { position: static; }
+  .unm-header-tools, .unm-mobile-tools, .unm-footer-directory, .unm-footer-social, .unm-footer-legal { display: none; }
+}

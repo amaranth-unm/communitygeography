@@ -1,0 +1,22 @@
+{% comment %}
+  Side-Scroll Image — insert a sticky image into an open side-scroll section
+
+  Parameters:
+    - ss-id:      shared side-scroll section ID (required)
+    - image-path: image path for the sticky image (required)
+    - alt-text:   image description for screen readers (optional)
+{% endcomment %}
+
+{% capture image-path %}
+{% include helpers/image-path.html image-path=include.image-path %}
+{% endcapture %}
+
+{% assign image-path = image-path | strip %}
+
+</div>
+
+<div class="ss-image-container" id="{{ include.ss-id }}">
+<img class="ss-image" src="{{image-path}}" alt="{{ include.alt-text | default: '' }}"/>
+</div>
+
+<div id="{{ include.ss-id }}-textbox" class="ss-text-box" markdown="1">

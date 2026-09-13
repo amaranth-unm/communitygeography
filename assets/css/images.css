@@ -1,0 +1,181 @@
+/*****************************************************
+IMAGES
+
+Figures and the image carousel: a single captioned image, an image set beside
+a passage of text, and the multi-slide carousel.
+
+Loads:    every page
+Used by:  images/figure.html, images/figure-wrap.html, images/carousel.html,
+          images/juxtapose.html
+Needs:    base.css tokens; Splide's own stylesheet for the carousel
+Not here: background images behind scrolling text (backgrounds.css), and the
+          thumbnails inside cards (cards.css)
+*****************************************************/
+
+@media screen {
+
+figure {
+  /* Box Model */
+  margin: 0;
+  margin-bottom: var(--spacing-md);
+  
+  /* Positioning */
+  clear: none;
+}
+
+.right {
+  /* Grid alignment within content column */
+  justify-self: end;
+  margin-bottom: var(--spacing-md);
+  text-align: left;
+}
+
+.left {
+  /* Grid alignment within content column */
+  justify-self: start;
+  margin-bottom: var(--spacing-md);
+}
+
+.center {
+  /* Grid alignment within content column */
+  justify-self: center;
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+}
+
+figcaption {
+  /* Display */
+  display: block;
+  
+  /* Box Model */
+  margin: 0.4rem 0 1rem 0;
+  padding: 0;
+  clear: both;
+  
+  /* Typography */
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.1rem;
+  text-align: justify;
+  color: var(--text-body);
+}
+
+figcaption a {
+  /* Typography */
+  font-weight: normal;
+
+  /* Visual */
+  opacity: 0.5;
+}
+
+/*****************************************************
+FIGURE WRAP — two-column image + text layout
+*****************************************************/
+
+.figure-wrap {
+  /* Display */
+  display: grid;
+  grid-template-columns: var(--figure-wrap-image-width, 40%) 1fr;
+  gap: var(--spacing-lg);
+  align-items: start;
+
+  /* Box Model */
+  margin-bottom: var(--spacing-lg);
+}
+
+.figure-wrap--right {
+  grid-template-columns: 1fr var(--figure-wrap-image-width, 40%);
+}
+
+.figure-wrap--right .figure-wrap-image {
+  order: 2;
+}
+
+.figure-wrap--right /* A lede set beside an image has roughly half the measure it was designed for,
+   and justification opens rivers of white at that width even with hyphenation
+   doing its best. Ragged right is the lesser evil in a narrow column. */
+.figure-wrap-text .lede,
+.figure-wrap-text .lead {
+  text-align: left;
+  hyphens: manual;
+}
+
+.figure-wrap-text {
+  order: 1;
+}
+
+.figure-wrap-image {
+  margin: 0;
+}
+
+.figure-wrap-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 600px) {
+  .figure-wrap,
+  .figure-wrap--right {
+    grid-template-columns: 1fr;
+  }
+
+  .figure-wrap--right .figure-wrap-image,
+  .figure-wrap--right .figure-wrap-text {
+    order: unset;
+  }
+}
+
+/*****************************************************
+IMAGE CAROUSEL
+Uses Splide.js — see _includes/images/carousel.html
+*****************************************************/
+
+/* Carousel wrapper — height is set via fixedHeight in Splide options */
+.xanthan-carousel {
+  /* Visual */
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+/* Figure fills the full slide height */
+.xanthan-carousel-slide {
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  /* Box Model */
+  margin: 0;
+}
+
+/* Image fills the slide, cropping as needed */
+.xanthan-carousel-slide img {
+  /* Display */
+  display: block;
+  flex: 1;
+
+  /* Box Model */
+  width: 100%;
+  min-height: 0;
+
+  /* Visual */
+  object-fit: cover;
+}
+
+/* Figcaption — appears below the image */
+.xanthan-carousel-slide figcaption {
+  /* Box Model */
+  padding: var(--spacing-sm) var(--spacing-md);
+  flex-shrink: 0;
+
+  /* Visual */
+  background: var(--bg-card);
+
+  /* Typography */
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+} /* end media screen */

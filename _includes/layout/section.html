@@ -1,0 +1,31 @@
+{% comment %}
+  Section Band — a full-width tinted or dark band behind a run of content.
+
+  Page content lives inside a centred .container. A band has to span the whole
+  window, so it must close that container, open itself, and reopen the
+  container afterwards. This pair does that, so pages never contain raw HTML.
+
+  ALWAYS pair with layout/section-end.html. An unclosed band will swallow the
+  rest of the page.
+
+  Parameters:
+    - style: alt | cool | warm (default: alt)
+        alt  — subtle tint, the default band
+        cool — a second tint, for when two bands would otherwise repeat
+        warm — dark band, for a deliberate change of voice
+
+  Usage:
+    {% raw %}{% include layout/section.html style="cool" %}
+
+    ## Who Xanthan is for
+
+    Content here.
+
+    {% include layout/section-end.html %}{% endraw %}
+{% endcomment %}
+{% assign section_style = include.style | default: 'alt' %}
+{::nomarkdown}
+</div>
+<div class="section-{{ section_style }}">
+  <div class="container">
+{:/nomarkdown}

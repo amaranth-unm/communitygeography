@@ -1,0 +1,765 @@
+/*****************************************************
+HOME / LANDING SECTIONS
+
+The full-width bands a landing page is built from.
+
+Six components: home-hero, profile-intro, split-intro, feature-block, picks
+(in three variants), and link-index. Each claims the container's `full` column
+and re-centres its own contents at --home-measure, so a page can stack them
+without any wrapper markup.
+
+Loads:    every page
+Used by:  layout/home-hero.html, layout/profile-intro.html,
+          layout/split-intro.html, layout/feature-block.html,
+          layout/picks.html, layout/link-index.html
+Needs:    base.css tokens, and the named-line `.container` grid in base.css
+Not here: the page-header hero drawn from front matter (page-header.css),
+          which is the other way to open a page
+
+👉 To widen or narrow every band at once, override --home-measure.
+*****************************************************/
+
+@media screen {
+
+:root {
+  /* Matches .wide-header and .gallery-grid--wide so a landing page's bands
+     line up with the wide components already in the framework. */
+  --home-measure: 64rem;
+  --home-band-padding: clamp(2.5rem, 6vw, 5rem);
+  --home-scrim: linear-gradient(180deg,
+                  color-mix(in srgb, var(--bg-scrim) 4%, transparent),
+                  color-mix(in srgb, var(--bg-scrim) 88%, transparent));
+}
+
+/* Page content sits in the centred `content` column of .container's grid.
+   A band has to span the window, so it claims the `full` column and does its
+   own centring. Written as a child selector for the same reason
+   .container > .wide-header is: it must beat .container > * without relying
+   on stylesheet order. */
+.container > .home-hero,
+.container > .home-profile,
+.container > .home-split,
+.container > .home-picks,
+.container > .home-index,
+.container > .feature-block {
+  grid-column: full;
+}
+
+.home-profile,
+.home-split,
+.home-picks,
+.home-index,
+.feature-block {
+  padding: var(--home-band-padding) var(--spacing-md);
+}
+
+.home-split-inner,
+.home-section-heading,
+.home-picks-grid,
+.home-index-grid {
+  max-width: var(--home-measure);
+  margin-inline: auto;
+}
+
+
+/*****************************************************
+SMALL CAPS LABELS
+
+The kicker above a headline and the label above a section heading are the
+same typographic device, so they share a definition. Only the colour differs,
+and that comes from whatever band they sit on.
+*****************************************************/
+
+.home-kicker,
+.home-section-label,
+.home-pick-label {
+  display: block;
+  margin: 0 0 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--text-kicker);
+}
+
+.home-section-heading {
+  margin-bottom: var(--spacing-md);
+}
+
+.home-section-heading h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.06;
+}
+
+
+/*****************************************************
+HOME HERO
+*****************************************************/
+
+.home-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(26rem, 72vh, 46rem);
+  overflow: hidden;
+  color: var(--text-on-dark);
+  background: var(--bg-feature-band);
+}
+
+.home-hero-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+/* The readability scrim lives here rather than in the include, so a theme can
+   change it and an author never has to think about contrast. */
+.home-hero-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--home-scrim);
+}
+
+.home-hero--left .home-hero-image::after {
+  background: linear-gradient(90deg,
+                color-mix(in srgb, var(--bg-scrim) 90%, transparent) 0%,
+                color-mix(in srgb, var(--bg-scrim) 62%, transparent) 38%,
+                color-mix(in srgb, var(--bg-scrim) 18%, transparent) 100%);
+}
+
+.home-hero-content {
+  position: relative;
+  width: 100%;
+  max-width: var(--home-measure);
+  margin-inline: auto;
+  padding: clamp(3rem, 7vw, 6rem) var(--spacing-md);
+}
+
+.home-hero--center {
+  align-items: center;
+  text-align: center;
+}
+
+.home-hero--center .home-hero-content {
+  max-width: 46rem;
+}
+
+.home-hero h1 {
+  max-width: 16ch;
+  margin: 0 0 var(--spacing-sm);
+  font-family: var(--font-serif);
+  font-size: clamp(2.6rem, 7vw, 6rem);
+  line-height: 0.98;
+  font-weight: 700;
+  color: var(--text-on-dark);
+}
+
+.home-hero--center h1 {
+  max-width: none;
+  margin-inline: auto;
+}
+
+.home-hero .home-kicker {
+  color: var(--text-feature-band-link);
+}
+
+.home-hero-text {
+  max-width: 42rem;
+  margin: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--text-on-dark);
+}
+
+.home-hero--center .home-hero-text {
+  margin-inline: auto;
+}
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-lg);
+}
+
+.home-hero--center .home-hero-actions {
+  justify-content: center;
+}
+
+.home-hero-actions a,
+.home-hero-actions a:visited {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid var(--text-feature-band-link);
+  border-bottom-color: var(--text-feature-band-link);
+  border-radius: var(--radius-sm);
+  background: var(--text-feature-band-link);
+  color: var(--text-body);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast),
+              border-color var(--transition-fast), transform var(--transition-fast);
+}
+
+.home-hero-actions a:hover,
+.home-hero-actions a:focus-visible {
+  background: var(--interactive-hover);
+  border-color: var(--interactive-hover);
+  color: var(--text-body);
+  transform: translateY(-2px);
+}
+
+
+/*****************************************************
+PROFILE INTRO — a photograph beside a name, a bio, and links
+
+The opening block of a personal homepage, and the successor to the profile
+sidebar in nav-profile.css. Same material, said once at full width, so the
+rest of the page keeps the whole column.
+*****************************************************/
+
+/* Unlike the other bands, this one lines up with the text column by default.
+   A portfolio homepage is usually prose with an opening block on top rather
+   than a stack of bands, and a wider opening reads as off-grid against the
+   paragraph beneath it. `width="wide"` puts it back on --home-measure for a
+   page that really is built from bands.
+
+   48rem is the `content` column of the .container grid in base.css; the two
+   have to match for the block to line up, so change them together. */
+.home-profile-inner {
+  max-width: 48rem;
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+  gap: clamp(var(--spacing-md), 4vw, var(--spacing-xl));
+  align-items: center;
+}
+
+.home-profile--wide .home-profile-inner {
+  max-width: var(--home-measure);
+}
+
+.home-profile-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* The sidebar's circular crop, for anyone who wants it. A square ratio is part
+   of the shape: a circle cut from a 4:5 portrait is an ellipse. */
+.home-profile--circle .home-profile-photo {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
+.home-profile-name {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  line-height: 1.06;
+}
+
+.home-profile-role {
+  margin: var(--spacing-xs) 0 0;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+}
+
+.home-profile-bio {
+  margin-top: var(--spacing-sm);
+}
+
+.home-profile-bio > :first-child {
+  margin-top: 0;
+}
+
+.home-profile-bio p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.home-profile-bio p:last-child {
+  margin-bottom: 0;
+}
+
+.home-profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin: var(--spacing-md) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-profile-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border-medium);
+  border-radius: 999px;
+  color: var(--text-body);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.home-profile-links a:hover,
+.home-profile-links a:focus-visible {
+  border-color: var(--interactive-hover);
+  background: var(--interactive-subtle-hover);
+  color: var(--text-body);
+  text-decoration: none;
+}
+
+/* Fixed width so the labels line up whether or not Font Awesome has loaded. */
+.home-profile-links i {
+  width: 1.1em;
+  text-align: center;
+}
+
+
+/*****************************************************
+SPLIT INTRO — a large claim beside its explanation
+*****************************************************/
+
+.home-split-grid {
+  display: grid;
+  grid-template-columns: minmax(15rem, 0.9fr) minmax(18rem, 1.1fr);
+  gap: clamp(var(--spacing-md), 4vw, var(--spacing-xl));
+  align-items: start;
+}
+
+.home-split h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 4vw, 3.4rem);
+  line-height: 1.06;
+}
+
+.home-split-body > :first-child {
+  margin-top: 0;
+}
+
+.home-split-body p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.home-split-body p:last-child {
+  margin-bottom: 0;
+}
+
+
+/*****************************************************
+PICKS — a named selection from a collection
+
+Three variants share one grid. --picks-columns comes from the include, so the
+count is an authoring decision rather than a CSS edit.
+*****************************************************/
+
+.home-picks-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--picks-columns, 4), minmax(0, 1fr));
+  gap: var(--spacing-xs);
+}
+
+.home-pick {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  border-bottom: 0;
+  border-radius: var(--radius-md);
+}
+
+/* No height here. A pick is a grid item, so it has a definite height, and a
+   height: 100% image would take all of it and push the caption out from under
+   a tile that clips its overflow. The overlay variants pin the image with
+   inset: 0 instead, and strip gives it an aspect ratio. */
+.home-pick img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--bg-card);
+  transition: transform var(--transition-normal), opacity var(--transition-normal);
+}
+
+.home-pick-title {
+  display: block;
+  font-family: var(--font-serif);
+  line-height: 1.08;
+}
+
+.home-pick p {
+  margin: 0.25rem 0 0;
+  font-size: 0.98rem;
+  line-height: 1.45;
+}
+
+/* --- strip: upright thumbnails, caption underneath --- */
+
+.home-picks--strip .home-pick {
+  display: block;
+  overflow: visible;
+  align-self: start;
+  border-radius: 0;
+  color: var(--text-body);
+}
+
+.home-picks--strip .home-pick img {
+  aspect-ratio: 1 / 1.18;
+  border-radius: var(--radius-md);
+}
+
+.home-picks--strip .home-pick-text {
+  padding-top: 0.6rem;
+}
+
+.home-picks--strip .home-pick-label {
+  margin-bottom: 0.2rem;
+}
+
+.home-picks--strip .home-pick-title {
+  font-size: 1.3rem;
+}
+
+.home-picks--strip .home-pick p {
+  color: var(--text-muted);
+}
+
+.home-picks--strip .home-pick:hover img {
+  transform: scale(1.03);
+}
+
+.home-picks--strip .home-pick:hover .home-pick-title {
+  color: var(--interactive-hover);
+}
+
+/* --- tiles and feature: caption laid over the image --- */
+
+.home-picks--tiles,
+.home-picks--feature {
+  background: var(--bg-feature-band);
+}
+
+.home-picks--tiles .home-section-label,
+.home-picks--feature .home-section-label {
+  color: var(--text-feature-band-link);
+}
+
+.home-picks--tiles .home-section-heading h2,
+.home-picks--feature .home-section-heading h2 {
+  color: var(--text-on-dark);
+}
+
+.home-picks--tiles .home-pick,
+.home-picks--feature .home-pick {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 22rem;
+  padding: var(--spacing-sm);
+  color: var(--text-on-dark);
+  background: var(--bg-tile);
+}
+
+.home-picks--tiles .home-pick img,
+.home-picks--feature .home-pick img {
+  position: absolute;
+  inset: 0;
+  opacity: 0.7;
+}
+
+.home-picks--tiles .home-pick::after,
+.home-picks--feature .home-pick::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--home-scrim);
+}
+
+.home-picks--tiles .home-pick-text,
+.home-picks--feature .home-pick-text {
+  position: relative;
+  z-index: 1;
+  margin-top: auto;
+}
+
+.home-picks--tiles .home-pick-label,
+.home-picks--feature .home-pick-label {
+  color: var(--text-feature-band-link);
+}
+
+.home-picks--tiles .home-pick-title,
+.home-picks--feature .home-pick-title {
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  color: var(--text-on-dark);
+}
+
+.home-picks--tiles .home-pick p,
+.home-picks--feature .home-pick p {
+  color: var(--text-feature-band-muted);
+}
+
+.home-picks--tiles .home-pick:hover img,
+.home-picks--feature .home-pick:hover img {
+  opacity: 0.92;
+  transform: scale(1.04);
+}
+
+.home-picks--tiles .home-pick:hover .home-pick-label,
+.home-picks--feature .home-pick:hover .home-pick-label {
+  color: var(--interactive-hover);
+}
+
+/* --- feature: the first pick is given the height of two --- */
+
+.home-picks--feature .home-pick--lead {
+  grid-row: span 2;
+  min-height: 34rem;
+}
+
+.home-picks--feature .home-pick--lead .home-pick-title {
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+}
+
+
+/*****************************************************
+FEATURE BLOCK — one item at full width
+*****************************************************/
+
+/* The band paints its own background, so it states its own text colour too.
+   Inheriting here means the block reads correctly on the page it was designed
+   on and turns invisible on the next one. */
+.feature-block {
+  background: var(--bg-section-alt);
+  color: var(--text-body);
+}
+
+/* No inner wrapper here: the block is only two children, so it is its own
+   grid and centres itself with padding, the way .section-alt does. */
+.feature-block {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(var(--spacing-md), 4vw, var(--spacing-xl));
+  align-items: center;
+  padding-inline: max(var(--spacing-md), calc(50% - var(--home-measure) / 2));
+}
+
+.feature-block--flip .feature-block-image {
+  order: 2;
+}
+
+.feature-block-image {
+  display: block;
+  overflow: hidden;
+  border-bottom: 0;
+  border-radius: var(--radius-md);
+}
+
+.feature-block-image img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: var(--bg-card);
+  transition: transform var(--transition-normal);
+}
+
+.feature-block-image:hover img {
+  transform: scale(1.03);
+}
+
+.feature-block-text h2 {
+  margin: 0 0 var(--spacing-xs);
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.06;
+  color: var(--text-section-alt-heading);
+}
+
+.feature-block-text h2 a,
+.feature-block-text h2 a:visited {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 0;
+}
+
+.feature-block-text h2 a:hover {
+  color: var(--interactive-hover);
+}
+
+.feature-block-text p {
+  color: var(--text-body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+
+.feature-block-byline {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.feature-block-cta,
+.feature-block-cta:visited {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--accent-primary);
+  border-radius: var(--radius-sm);
+  background: var(--accent-primary);
+  color: var(--text-on-dark);
+  font-weight: 700;
+  text-decoration: none;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.feature-block-cta:hover {
+  background: var(--interactive-hover-bg);
+  border-color: var(--interactive-hover);
+  color: var(--text-body);
+}
+
+
+/*****************************************************
+LINK INDEX — labelled destinations, one per row
+*****************************************************/
+
+.home-index-grid {
+  display: grid;
+  grid-template-columns: minmax(14rem, 0.7fr) minmax(18rem, 1.3fr);
+  gap: clamp(var(--spacing-md), 4vw, var(--spacing-xl));
+  align-items: start;
+}
+
+.home-index-heading h2 {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3.6vw, 3rem);
+  line-height: 1.06;
+}
+
+/* A one-pixel gap over a tinted background draws the dividing rules, so hover
+   can repaint a whole row without a border shifting anything. */
+.home-index-links {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--border-light);
+  background: var(--border-light);
+}
+
+.home-index-links a,
+.home-index-links a:visited {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.45fr) 1fr;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  background: var(--bg-page);
+  color: var(--text-body);
+  text-decoration: none;
+  border-bottom: 0;
+  transition: background var(--transition-fast);
+}
+
+.home-index-links a:hover {
+  background: var(--bg-section-alt);
+}
+
+.home-index-links strong {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  line-height: 1.08;
+}
+
+.home-index-links span {
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+
+/*****************************************************
+RESPONSIVE
+*****************************************************/
+
+@media (max-width: 60rem) {
+  .home-split-grid,
+  .home-index-grid,
+  .feature-block {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stacked, the photo is no longer holding up a column, so it stops being
+     full width and sits with the text it introduces. */
+  .home-profile-inner {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+
+  .home-profile-photo {
+    max-width: 12rem;
+  }
+
+  .feature-block--flip .feature-block-image {
+    order: 0;
+  }
+
+  /* Two across is the smallest count that still reads as a set. Below that the
+     tiles are just a stack, which the phone breakpoint handles. */
+  .home-picks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-picks--feature .home-pick--lead {
+    grid-row: auto;
+    min-height: 26rem;
+  }
+}
+
+@media (max-width: 40rem) {
+  .home-hero {
+    min-height: 32rem;
+  }
+
+  .home-picks--strip .home-picks-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-picks--tiles .home-picks-grid,
+  .home-picks--feature .home-picks-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home-index-links a {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-pick img,
+  .home-hero-actions a,
+  .feature-block-image img {
+    transition: none;
+  }
+
+  .home-pick:hover img,
+  .home-hero-actions a:hover,
+  .feature-block-image:hover img {
+    transform: none;
+  }
+}
+
+} /* end @media screen */

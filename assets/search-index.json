@@ -1,0 +1,20 @@
+---
+layout: null
+---
+[
+  {% assign pages_with_titles = site.pages | where_exp: "p", "p.title" %}
+  {% assign separator = '' %}
+  {% for page in pages_with_titles %}
+    {% unless page.url contains '/assets/' or page.url contains '/search-index' or page.searchable == false %}
+    {{ separator }}{
+      "title": {{ page.title | jsonify }},
+      "url": "{{ site.baseurl }}{{ page.url }}",
+      "summary": {{ page.summary | default: "" | jsonify }},
+      "content": {{ page.content | strip_html | truncatewords: 200 | jsonify }},
+      "tags": {{ page.tags | default: "" | jsonify }},
+      "date": {{ page.date | date: "%Y-%m-%d" | jsonify }}
+    }
+    {% assign separator = ',' %}
+    {% endunless %}
+  {% endfor %}
+]

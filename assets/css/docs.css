@@ -1,0 +1,331 @@
+/*****************************************************
+DOCS
+
+Styles used only by pages under /docs/ — table column widths, the template
+chooser, and the interactive colour lab.
+
+This is documentation furniture, not framework. A site built with Xanthan never
+loads it unless it keeps the docs.
+
+Loads:    only on pages whose URL contains /docs/ (see html/html-head.html)
+Used by:  docs/getting-started/templates.md, docs/reference/colors-and-fonts.md
+Needs:    base.css tokens
+Not here: anything a reader's own site would use
+*****************************************************/
+
+/*
+  Reference table layout: pins column widths for the
+  standard three-column pattern (Field | Example | What it does).
+  Assumes most docs tables follow this pattern.
+  If a table on a docs page has a different structure,
+  add class="auto-table" and override table-layout: auto on it.
+*/
+.container table {
+  table-layout: fixed;
+}
+
+.container table th:first-child,
+.container table td:first-child {
+  width: 18%;
+  white-space: nowrap;
+}
+
+.container table th:nth-child(2),
+.container table td:nth-child(2) {
+  width: 36%;
+}
+
+/* Documentation index */
+.docs-index h2 {
+  font-size: 1.15rem;
+  margin: 1.2rem 0 0.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.docs-index p {
+  margin: 0 0 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.docs-index ul {
+  margin: 0 0 0.25rem;
+  padding-left: 1rem;
+}
+
+.docs-index ul li {
+  margin: 0;
+  padding: 0.02rem 0;
+}
+
+.docs-index hr {
+  margin: 0.75rem 0;
+}
+
+.docs-index a {
+  border-bottom: none;
+}
+
+.docs-index a:hover {
+  color: var(--interactive-hover);
+}
+
+/* Template chooser cards and buttons */
+.setup-selector {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-sm);
+  margin: var(--spacing-lg) 0;
+}
+
+.setup-option {
+  padding: var(--spacing-md);
+  border: 1px solid var(--accent-border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  background: var(--bg-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.setup-option.selected {
+  border-color: var(--interactive-hover);
+  background: var(--interactive-subtle-hover);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--interactive-hover) 20%, transparent);
+}
+
+/* The same idea on the starter-site chooser page, where each option is a
+   section rather than a card. */
+.coming-soon-heading {
+  opacity: 0.72;
+}
+
+.template-btn.primary[disabled] {
+  cursor: not-allowed;
+  background: transparent;
+  border-style: dashed;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+/* A starter site that is listed but not ready yet. Shown rather than hidden so
+   a reader can see what is coming, muted so it does not read as a choice.
+   Kept legible: this is a preview, not disabled furniture, so the text stays
+   above the contrast floor rather than being dimmed into decoration. */
+.setup-option--coming-soon {
+  border-style: dashed;
+  background: transparent;
+}
+
+.setup-option--coming-soon h3,
+.setup-option--coming-soon p {
+  color: var(--text-muted);
+}
+
+.setup-option--coming-soon .template-btn.primary[disabled] {
+  cursor: not-allowed;
+  background: transparent;
+  border-style: dashed;
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.setup-option--coming-soon .template-btn.primary[disabled]:hover {
+  background: transparent;
+  color: var(--text-muted);
+  transform: none;
+}
+
+.setup-option input[type="radio"] {
+  display: none;
+}
+
+.setup-option h3 {
+  margin: 0 0 var(--spacing-xs) 0;
+  font-size: 1.2rem;
+  color: var(--accent-border);
+}
+
+.setup-option p {
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  flex-grow: 1;
+}
+
+.template-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  margin-top: var(--spacing-md);
+}
+
+.setup-option .template-buttons {
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.template-btn-row {
+  display: flex;
+  gap: var(--spacing-xs);
+}
+
+.template-btn {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  background: var(--interactive-subtle);
+  color: var(--accent-primary-dark);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  flex: 1;
+  white-space: nowrap;
+}
+
+.setup-option .template-btn {
+  padding: var(--spacing-xs);
+  font-size: 0.85rem;
+}
+
+.template-btn:hover {
+  background: var(--interactive-subtle-hover);
+  border-color: var(--interactive-hover);
+  color: var(--accent-primary-dark);
+}
+
+/* In the starter-site picker the accent colour marks the current choice, not
+   the available ones. An unchosen button is quiet; the chosen one is the only
+   thing wearing the accent, so the reader can see their selection at a glance
+   instead of hunting for which card is highlighted. */
+.template-btn.primary {
+  background: var(--interactive-subtle);
+  color: var(--accent-primary-dark);
+  border-color: var(--border-medium);
+  width: 100%;
+  flex: none;
+  font-weight: 600;
+}
+
+.template-btn.primary:hover {
+  background: var(--interactive-subtle-hover);
+  border-color: var(--interactive-hover);
+  color: var(--accent-primary-dark);
+}
+
+.template-btn.primary.selected-btn {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: var(--text-on-dark);
+  cursor: default;
+  pointer-events: none;
+}
+
+.template-btn.placeholder {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.template-name {
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+/* Color lab */
+.color-lab {
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: var(--spacing-lg) 0;
+}
+
+.color-lab-controls {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.color-control label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.color-control input[type="color"] {
+  display: block;
+  width: 100%;
+  height: 32px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 2px 4px;
+  background: none;
+}
+
+.color-lab-preview {
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.color-lab-preview h3 {
+  font-size: 1.3rem;
+  margin: 0 0 0.5rem;
+}
+
+.color-lab-preview p {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+}
+
+.color-lab-preview a {
+  display: inline-block;
+  margin-bottom: 1rem;
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+
+.lab-card {
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.color-lab-output {
+  background: var(--bg-code);
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--border-medium);
+}
+
+.color-lab-output .lab-output-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.color-lab-output pre {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  white-space: pre;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .setup-selector {
+    grid-template-columns: 1fr;
+  }
+}

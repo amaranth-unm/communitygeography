@@ -1,0 +1,46 @@
+{% comment %}
+  Card TOC — compact linked rows from a collection of pages or card objects
+
+  Parameters:
+    - heading-level: 2–6, level for each item title (default: 3)
+    - rows: collection of page/card objects (required)
+
+  Recommended row fields:
+    - title:   card title
+    - summary: short description
+    - link:    optional URL; falls back to page url
+    - position: sort order
+{% endcomment %}
+
+{% assign rows = include.rows | sort: "position" %}
+{% assign heading_level = include.heading-level | default: 3 %}
+
+{::nomarkdown}
+{% if include.rows and rows.size > 0 %}
+  {% for row in rows %}
+    <div class="toc-row">
+      {% assign link = row.link | default: row.url %}
+      {% capture link_resolved %}{% include helpers/link-path.html link=link %}{% endcapture %}
+      <a href="{{ link_resolved | strip }}">
+        <div class="toc-row-flex">
+          <div class="toc-body">
+            <h{{ heading_level }}>{{ row.title | default: 'Untitled' }}</h{{ heading_level }}>
+            {% if row.summary %}
+              <p>{{ row.summary }}</p>
+            {% endif %}
+          </div>
+          <span class="toc-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="var(--accent-border)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="xanthan-warning">
+    card-toc include needs a rows collection.
+  </div>
+{% endif %}
+{:/nomarkdown}

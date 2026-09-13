@@ -1,0 +1,31 @@
+{%- comment -%}
+  Find Item — internal helper for layout/feature-block.html and layout/picks.html
+
+  Not meant to be used directly in a page. Resolves a collection name plus a
+  slug to a page object, and leaves it in the variable `xanthan_item` (Jekyll
+  includes share the caller's scope, so the assignment is visible afterwards).
+  `xanthan_item` is false when nothing matched.
+
+  Parameters:
+    - collection: folder or Jekyll collection name, e.g. "essays"
+    - slug:       the item's folder or file name, e.g. "chess"
+
+  Three shapes are tried, so sites can organise content however they already do:
+    1. a real Jekyll collection declared in _config.yml   (site.essays, matched on slug)
+    2. a folder page                                       essays/chess/index.md
+    3. a flat file                                         essays/chess.md
+{%- endcomment -%}
+
+{%- assign xanthan_item = false -%}
+{%- assign xanthan_coll = site[include.collection] -%}
+{%- if xanthan_coll and xanthan_coll.size > 0 -%}
+  {%- assign xanthan_item = xanthan_coll | where: "slug", include.slug | first -%}
+{%- endif -%}
+{%- unless xanthan_item -%}
+  {%- assign xanthan_path = include.collection | append: "/" | append: include.slug | append: "/index.md" -%}
+  {%- assign xanthan_item = site.pages | where: "path", xanthan_path | first -%}
+{%- endunless -%}
+{%- unless xanthan_item -%}
+  {%- assign xanthan_path = include.collection | append: "/" | append: include.slug | append: ".md" -%}
+  {%- assign xanthan_item = site.pages | where: "path", xanthan_path | first -%}
+{%- endunless -%}

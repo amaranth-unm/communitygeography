@@ -1,0 +1,16 @@
+{% comment %}
+  Audio Player — HTML5 audio controls
+
+  Parameters:
+    - src: audio file path or URL (required)
+{% endcomment %}
+
+{% if include.src %}
+  <audio controls src="{{ include.src }}">
+    Your browser does not support the audio element.
+  </audio>
+{% else %}
+  <div class="xanthan-warning">
+    audio include needs a src parameter.
+  </div>
+{% endif %}

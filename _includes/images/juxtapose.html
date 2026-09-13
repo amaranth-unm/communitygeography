@@ -1,0 +1,41 @@
+{% comment %}
+  Before/After Slider — draggable comparison using Juxtapose
+
+  Parameters:
+    - image1:            left image path (required)
+    - image2:            right image path (required)
+    - caption:           caption below the slider (optional; markdown supported)
+    - starting-position: initial slider position as a percentage (default: 50%)
+    - alt-text-left:     accessibility description for the left image (optional)
+    - alt-text-right:    accessibility description for the right image (optional)
+    - class:             CSS class for the caption (optional)
+{% endcomment %}
+
+{% capture img1_url %}
+{% include helpers/image-path.html image-path=include.image1 %}
+{% endcapture %}
+{% capture img2_url %}
+{% include helpers/image-path.html image-path=include.image2 %}
+{% endcapture %}
+{% assign img1_url = img1_url | strip %}
+{% assign img2_url = img2_url | strip %}
+
+{% if img1_url and img2_url %}
+  <figure>
+    <div id="juxtapose-wrapper" class="juxtapose" data-startingposition="{{ include.starting-position | default: '50%' }}"
+      data-label="{{ include.data-label }}" data-credit="{{ include.data-credit }}" data-showlabels="false"
+      data-showcredits="false" data-animate="false">
+      <img src="{{ img1_url }}" alt="{{ include.alt-text-left | default: include.caption | default: '' }}" />
+      <img src="{{ img2_url }}" alt="{{ include.alt-text-right | default: include.caption | default: '' }}" />
+    </div>
+    {% if include.caption %}
+      <figcaption class="{{ include.class }}">
+        {{ include.caption | markdownify }}
+      </figcaption>
+    {% endif %}
+  </figure>
+{% else %}
+  <div class="xanthan-warning">
+    juxtapose include needs image1 and image2 parameters.
+  </div>
+{% endif %}

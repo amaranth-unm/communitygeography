@@ -1,0 +1,55 @@
+{% comment %}
+  Link Index — a titled block of labelled links, one per row.
+
+  For the "where to go from here" section at the foot of a landing page. Each
+  row gives a destination a name and a sentence, which a plain list of links
+  cannot do. Use it for a handful of major destinations, not for navigation.
+
+  Parameters:
+    - links:  array of { label, url, text } (required)
+    - title:  heading for the block (required)
+    - kicker: small caps label above the heading (optional)
+
+  Front matter:
+    explore_links:
+      - label: Thematic Essays
+        url: /essays/
+        text: Read the full set of thematic studies.
+      - label: Eurasian Map
+        url: /map/
+        text: See where the stories sit across Eurasia.
+
+  Page body:
+    {% raw %}{% include layout/link-index.html
+        links=page.explore_links
+        kicker="Explore More"
+        title="The collection keeps opening outward." %}{% endraw %}
+{% endcomment %}
+
+{% assign links = include.links %}
+
+{::nomarkdown}
+{% if links and links.size > 0 %}
+  <section class="home-index">
+    <div class="home-index-grid">
+    <div class="home-index-heading">
+      {% if include.kicker %}<p class="home-section-label">{{ include.kicker }}</p>{% endif %}
+      {% if include.title %}<h2>{{ include.title }}</h2>{% endif %}
+    </div>
+    <div class="home-index-links">
+      {% for link in links %}
+        {% capture link_url %}{% include helpers/link-path.html link=link.url %}{% endcapture %}
+        <a href="{{ link_url | strip }}">
+          <strong>{{ link.label }}</strong>
+          <span>{{ link.text }}</span>
+        </a>
+      {% endfor %}
+    </div>
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    link-index include needs a links array of label/url/text entries.
+  </div>
+{% endif %}
+{:/nomarkdown}

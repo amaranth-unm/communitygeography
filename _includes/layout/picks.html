@@ -1,0 +1,108 @@
+{% comment %}
+  Picks — a chosen handful of pages from a collection, shown image-first.
+
+  Card grids and gallery grids show everything in a folder, in order. This shows
+  the few items you name, in the order you name them, so a landing page can
+  make an editorial selection instead of a directory listing. Each item is
+  picked by slug; its title, summary, and thumbnail come from its own page, and
+  any of the three can be overridden per item.
+
+  Parameters:
+    - items:      array of item objects (required). Keys per item:
+        slug:  the item's folder or file name (required)
+        label: small caps kicker above the title (optional; falls back to the
+               page's own `category`)
+        title: override the page's title (optional)
+        text:  a sentence under the title (optional). In the tiles and feature
+               variants this falls back to the page's summary; in strip it
+               appears only if you write one, because a row of small upright
+               thumbnails has no room for a paragraph under each.
+        image: override the page's thumbnail (optional)
+        alt:   description of the image for screen readers (optional)
+    - collection: folder or Jekyll collection the items live in (required)
+    - variant:    strip | tiles | feature (default: tiles)
+        strip   — a row of upright thumbnails, caption underneath. For objects,
+                  people, or anything where the picture is the identifier.
+        tiles   — equal tiles, caption laid over the image. For themes or
+                  routes into the site, where the text does real work.
+        feature — like tiles, but the first item is given double height. For an
+                  editor's-picks block with a clear lead item.
+    - title:      heading above the block (optional)
+    - kicker:     small caps label above the heading (optional)
+    - columns:    tiles across on wide screens (default: 5 for strip, 4 for
+                  tiles, 2 for feature)
+
+  Front matter:
+    reading_paths:
+      - slug: chess
+        label: "Games & Play"
+        text: Chess, polo, and sport as evidence of cultural movement.
+      - slug: greco-buddhist-art
+        label: "Faith & Transformation"
+
+  Page body:
+    {% raw %}{% include layout/picks.html
+        items=page.reading_paths
+        collection="essays"
+        variant="tiles"
+        kicker="Reading Paths"
+        title="Choose a thread and follow it." %}{% endraw %}
+{% endcomment %}
+
+{% assign variant = include.variant | default: "tiles" %}
+{% if variant == "strip" %}
+  {% assign default_columns = 5 %}
+{% elsif variant == "feature" %}
+  {% assign default_columns = 2 %}
+{% else %}
+  {% assign default_columns = 4 %}
+{% endif %}
+{% assign columns = include.columns | default: default_columns %}
+
+{::nomarkdown}
+{% if include.items and include.items.size > 0 %}
+  <section class="home-picks home-picks--{{ variant }}">
+    {% if include.title or include.kicker %}
+      <div class="home-section-heading">
+        {% if include.kicker %}<p class="home-section-label">{{ include.kicker }}</p>{% endif %}
+        {% if include.title %}<h2>{{ include.title }}</h2>{% endif %}
+      </div>
+    {% endif %}
+    <div class="home-picks-grid" style="--picks-columns: {{ columns }};">
+      {% for item in include.items %}
+        {% include helpers/find-item.html collection=include.collection slug=item.slug %}
+        {% if xanthan_item %}
+          {% assign pick_label = item.label | default: xanthan_item.category %}
+          {% assign pick_title = item.title | default: xanthan_item.title %}
+          {% if variant == "strip" %}
+            {% assign pick_text = item.text %}
+          {% else %}
+            {% assign pick_text = item.text | default: xanthan_item.summary %}
+          {% endif %}
+          {% assign pick_image = item.image | default: xanthan_item.thumbnail %}
+          {% capture pick_url %}{% include helpers/link-path.html link=xanthan_item.url %}{% endcapture %}
+          <a class="home-pick{% if variant == 'feature' and forloop.first %} home-pick--lead{% endif %}" href="{{ pick_url | strip }}">
+            {% if pick_image %}
+              {% capture pick_image_url %}{% include helpers/image-path.html image-path=pick_image page-dir=xanthan_item.dir %}{% endcapture %}
+              <img src="{{ pick_image_url | strip }}" alt="{{ item.alt | default: '' | escape }}">
+            {% endif %}
+            <div class="home-pick-text">
+              {% if pick_label %}<span class="home-pick-label">{{ pick_label }}</span>{% endif %}
+              <strong class="home-pick-title">{{ pick_title }}</strong>
+              {% if pick_text %}<p>{{ pick_text }}</p>{% endif %}
+            </div>
+          </a>
+        {% else %}
+          <div class="xanthan-warning">
+            picks could not find "{{ item.slug }}" in "{{ include.collection }}".
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    picks include needs an items array (each with a slug) and a collection.
+  </div>
+{% endif %}
+{:/nomarkdown}

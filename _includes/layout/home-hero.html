@@ -1,0 +1,66 @@
+{% comment %}
+  Home Hero — a full-bleed opening image with a headline and optional buttons.
+
+  The page-wide opening for a landing page. Unlike the page header (which comes
+  from front matter and sits above the content), this is a component you place
+  in the page body, so it can be followed directly by other homepage sections.
+
+  Reach for layout/page-header.html instead when you want the standard header
+  image with a title over it; reach for this when the opening needs buttons or
+  needs to sit inside the flow of a composed homepage.
+
+  Parameters:
+    - hero: an object from front matter (required). Keys:
+        image:   background image, site-root (/assets/...) or relative (required)
+        alt:     description of the image for screen readers (defaults to title)
+        kicker:  small caps line above the headline (optional)
+        title:   the headline (optional)
+        text:    one paragraph under the headline (optional)
+        buttons: array of { label, url } (optional)
+    - align: left | center — headline position (default: left)
+
+  Front matter:
+    hero:
+      image: /assets/images/gate.jpg
+      alt: A tiled gateway
+      kicker: A digital exhibition
+      title: The Silk Road Was Stranger Than Silk
+      text: Games, cosmetics, glass, and religion moved along the same routes.
+      buttons:
+        - label: Read the Essays
+          url: /essays/
+        - label: Browse Objects
+          url: /objects/
+
+  Page body:
+    {% raw %}{% include layout/home-hero.html hero=page.hero %}{% endraw %}
+{% endcomment %}
+
+{% assign hero = include.hero %}
+{% assign align = include.align | default: 'left' %}
+
+{::nomarkdown}
+{% if hero and hero.image %}
+  {% capture hero_image %}{% include helpers/image-path.html image-path=hero.image %}{% endcapture %}
+  <section class="home-hero home-hero--{{ align }}">
+    <div class="home-hero-image" role="img" aria-label="{{ hero.alt | default: hero.title | escape }}" style="background-image: url('{{ hero_image | strip }}');"></div>
+    <div class="home-hero-content">
+      {% if hero.kicker %}<p class="home-kicker">{{ hero.kicker }}</p>{% endif %}
+      {% if hero.title %}<h1>{{ hero.title }}</h1>{% endif %}
+      {% if hero.text %}<p class="home-hero-text">{{ hero.text }}</p>{% endif %}
+      {% if hero.buttons %}
+        <div class="home-hero-actions">
+          {% for button in hero.buttons %}
+            {% capture button_url %}{% include helpers/link-path.html link=button.url %}{% endcapture %}
+            <a href="{{ button_url | strip }}">{{ button.label }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    home-hero include needs a hero object with at least an image.
+  </div>
+{% endif %}
+{:/nomarkdown}

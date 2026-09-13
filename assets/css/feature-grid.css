@@ -1,0 +1,72 @@
+/*****************************************************
+FEATURE GRID
+
+Short titled points laid out side by side instead of stacked, for the
+"here's what this gives you" passages that otherwise become a long column of
+small headings.
+
+Loads:    every page
+Used by:  layout/feature-grid.html
+Needs:    base.css tokens (--bg-feature-card, --text-feature-card, --spacing-*)
+Not here: the feature block, which gives one item the full width with an image
+          (home.css), and the feature row, a text-plus-button line (buttons.css)
+*****************************************************/
+
+@media screen {
+
+/* Short titled points set side by side instead of stacked.
+   👉 Pass columns=3 to the include for a three-across row. */
+.feature-grid {
+  /* Display */
+  display: grid;
+  gap: var(--spacing-lg) var(--spacing-xl);
+
+  /* Box Model */
+  margin: var(--spacing-lg) 0;
+}
+
+/* minmax(0, 1fr) rather than 1fr so long words can't widen a column */
+.feature-grid--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.feature-grid--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.feature-grid-item {
+  /* Box Model */
+  padding-top: var(--spacing-sm);
+
+  /* Visual */
+  border-top: 2px solid var(--accent-border);
+}
+
+.feature-grid-item h3 {
+  /* Box Model */
+  margin-top: 0;
+  margin-bottom: var(--spacing-xs);
+
+  /* Typography */
+  font-size: 1.25rem;
+}
+
+.feature-grid-item p:last-child {
+  /* Box Model */
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .feature-grid--2,
+  .feature-grid--3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Right-aligned call-out — wraps a .btn-secondary .btn-sm link */
+.link-callout {
+  text-align: right;
+  margin-top: var(--spacing-md);
+}
+
+} /* end media screen */

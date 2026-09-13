@@ -1,0 +1,35 @@
+{% comment %}
+  Map Config — internal helper, not for use in page content
+
+  Turns the hyphenated include parameters into the JSON blob that
+  assets/js/story-map.js reads from data-story-map. Both map includes use it so
+  the two stay in step.
+
+  Coordinates are passed through as split strings rather than numbers on
+  purpose: Liquid has no way to tell 35.7 from a typo, so the JavaScript coerces
+  them and reports what it could not read.
+{% endcomment %}
+
+{% capture overlay_url %}{% if include.overlay-image %}{% include helpers/image-path.html image-path=include.overlay-image %}{% endif %}{% endcapture %}
+{% assign overlay_url = overlay_url | strip %}
+
+{% capture geojson_url %}{% if include.geojson %}{% include helpers/image-path.html image-path=include.geojson %}{% endif %}{% endcapture %}
+{% assign geojson_url = geojson_url | strip %}
+
+{% assign bounds = include.overlay-bounds | default: '' | split: ',' %}
+{% assign center = include.center | default: '' | split: ',' %}
+
+{% capture xanthan_map_config %}{
+{% if overlay_url != '' %}"overlay": {{ overlay_url | jsonify }},
+"overlayBounds": {{ bounds | jsonify }},
+"overlayAlt": {{ include.overlay-alt | default: '' | jsonify }},
+"overlayOpacity": {{ include.overlay-opacity | default: 0.9 }},{% endif %}
+{% if geojson_url != '' %}"geojson": {{ geojson_url | jsonify }},{% endif %}
+{% if center.size == 2 %}"center": {{ center | jsonify }},{% endif %}
+{% if include.zoom %}"zoom": {{ include.zoom }},{% endif %}
+{% if include.basemap %}"basemap": {{ include.basemap | jsonify }},
+"basemapOpacity": {{ include.basemap-opacity | default: 0.5 }},
+"basemapAttribution": {{ include.basemap-attribution | default: '' | jsonify }},{% endif %}
+{% if include.interactive == false %}"interactive": false,{% endif %}
+"attribution": {{ include.attribution | default: '' | jsonify }}
+}{% endcapture %}

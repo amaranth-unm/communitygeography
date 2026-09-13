@@ -1,0 +1,279 @@
+/*****************************************************
+GALLERY GRID
+
+Image-first tiles with the caption laid over the picture. For collections where
+the pictures do the navigating and there is no reading measure to respect.
+
+`.wide-header` lives here too: it is the heading block that breaks out of the
+text column to line up with a wide gallery, and its width has to stay in step
+with `.gallery-grid--wide`.
+
+Loads:    every page
+Used by:  nav/gallery-grid.html
+Needs:    base.css tokens (--gallery-caption-rest, --gallery-caption-active) and
+          the `full` column of the base.css `.container` grid
+Not here: cards, which put the caption beside or beneath the image (cards.css);
+          the picks component, which selects items editorially rather than
+          listing a folder (home.css)
+*****************************************************/
+
+/* Gallery grid navigation */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--gallery-grid-min-width)), 1fr));
+  grid-auto-flow: dense;
+  gap: var(--gallery-grid-gap);
+  margin-bottom: var(--spacing-lg);
+}
+
+.gallery-grid-item {
+  position: relative;
+  min-height: 12rem;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.gallery-grid-link {
+  display: block;
+  position: relative;
+  height: 100%;
+  color: var(--text-on-dark);
+  border-bottom: 0;
+}
+
+.gallery-grid-link:visited,
+.gallery-grid-link:hover {
+  color: var(--text-on-dark);
+  border-bottom: 0;
+}
+
+.gallery-grid-link img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Tiles are square but site screenshots are tall, so a centred crop lands in
+     the middle of the body text and the site becomes unrecognisable. Anchor to
+     the top instead: the header, nav, and title are what identify a site. */
+  object-position: top;
+  opacity: 0.82;
+  filter: saturate(0.82) contrast(0.96);
+  transition: transform var(--transition-normal), filter var(--transition-normal), opacity var(--transition-normal);
+}
+
+.gallery-grid-link:hover img,
+.gallery-grid-link:focus-visible img {
+  transform: scale(1.04);
+  opacity: 1;
+  filter: saturate(1.08) contrast(1.02);
+}
+
+/* Heading and intro for a wide block. Without this the heading sits on the
+   narrower text column while the grid below starts further left, and the two
+   read as unrelated. Matches gallery-grid--wide so their left edges agree.
+   Prose inside keeps a readable measure rather than running the full width. */
+.container > .wide-header {
+  grid-column: full;
+  width: min(100% - 2 * var(--spacing-lg), 64rem);
+  margin-inline: auto;
+}
+
+.wide-header > p {
+  max-width: 44rem;
+}
+
+/* A gallery is pictures, not prose, so it has no reading measure to respect.
+   This variant breaks out of the text column to a wider block and centres
+   itself, which is what lets the tiles be smaller and more numerous without
+   the grid feeling cramped.
+   👉 Pass class="gallery-grid--wide" to the include. */
+.container > .gallery-grid--wide {
+  grid-column: full;
+  width: min(100% - 2 * var(--spacing-lg), 64rem);
+  margin-inline: auto;
+}
+
+/* The element always spans the tile; how much of the image it hides is done
+   with the gradient, which animates smoothly where a height change would not.
+   At rest it is a band across the bottom third carrying only the title. On
+   hover the scrim rises to about four fifths, leaving the top of the
+   screenshot visible so the tile still reads as a website.
+   Deliberately no backdrop-filter: it applies to the element's whole box, so
+   a blur here would frost the entire preview no matter what the gradient
+   does — which is what made the hover state feel like a full cover. */
+.gallery-grid-caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-sm);
+  background: linear-gradient(
+    to top,
+    var(--gallery-caption-rest) 0%,
+    var(--gallery-caption-rest) 30%,
+    transparent 62%
+  );
+  text-shadow: var(--page-header-title-shadow);
+  transition: background var(--transition-normal);
+}
+
+.gallery-grid-link:hover .gallery-grid-caption,
+.gallery-grid-link:focus-visible .gallery-grid-caption {
+  background: linear-gradient(
+    to top,
+    var(--gallery-caption-active) 0%,
+    var(--gallery-caption-active) 78%,
+    transparent 94%
+  );
+}
+
+.gallery-grid-caption h3 {
+  margin: 0;
+  color: var(--text-on-dark);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.gallery-grid-caption p {
+  max-height: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-on-dark);
+  font-size: 0.8rem;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(var(--spacing-xs));
+  transition: max-height var(--transition-normal), margin var(--transition-normal), opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.gallery-grid-link:hover .gallery-grid-caption p,
+.gallery-grid-link:focus-visible .gallery-grid-caption p {
+  max-height: 14rem;
+  margin-top: var(--spacing-xs);
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Touch devices have no hover, so the description would never be reachable.
+   Show it standing rather than leaving those readers with titles only. */
+@media (hover: none) {
+  .gallery-grid-caption {
+      background: linear-gradient(
+        to top,
+        var(--gallery-caption-active) 0%,
+        var(--gallery-caption-active) 78%,
+        transparent 94%
+      );
+    
+  }
+
+  .gallery-grid-caption p {
+      max-height: 14rem;
+      margin-top: var(--spacing-xs);
+      opacity: 1;
+      transform: none;
+    
+  }
+}
+
+@media (min-width: 768px) {
+  .gallery-grid--mosaic .gallery-grid-item:nth-child(6n + 1),
+  .gallery-grid--mosaic .gallery-grid-item:nth-child(6n + 5) {
+      grid-column: span 2;
+      grid-row: span 2;
+    
+  }
+}
+
+/*****************************************************
+MASONRY VARIANT
+
+The grid above crops every tile to a square, which is right for screenshots —
+they are all the same shape anyway — and wrong for photographs of things. A
+scroll is tall, a dish is wide, a coin is small; squaring them all throws away
+the one piece of information a picture of an object carries for free, which is
+its proportions.
+
+So this variant lays the tiles out in CSS columns instead of a grid. Each tile
+keeps its image's own aspect ratio and the column fills bottom-up, the way a
+picture wall does. Nothing else changes: the caption, the hover reveal and the
+touch fallback above all apply here too.
+
+👉 Pass variant="masonry" to nav/gallery-grid.html.
+*****************************************************/
+
+.gallery-grid--masonry {
+  display: block;
+  /* The include writes --gallery-grid-min-width from its min-width parameter.
+     In the grid variant it is a minimum before wrapping; here it is the column
+     width proper, which is close enough in effect that one parameter can mean
+     both.
+
+     column-count alongside it is a ceiling, not an instruction: the browser
+     opens as many columns as fit, but never more than the number given, and
+     widens them to fill what is left over. The include works that ceiling out
+     from how many items it was given, which is what keeps a collection of
+     three from balancing itself into a few narrow columns at the left of a
+     wide screen. A large collection never reaches the ceiling and behaves as
+     though it were not there. */
+  column-width: var(--gallery-grid-min-width);
+  column-count: var(--gallery-grid-columns, auto);
+  column-gap: var(--gallery-grid-gap);
+}
+
+/* Phones are narrow enough that a 220px column becomes one column and the wall
+   turns into a single stack of very large pictures. Capping the column at just
+   under half the viewport keeps at least two abreast without asking the page
+   to pass a second measurement. */
+@media (max-width: 640px) {
+  .gallery-grid--masonry {
+    column-width: min(var(--gallery-grid-min-width), 45vw);
+  }
+}
+
+.gallery-grid--masonry .gallery-grid-item {
+  display: inline-block;
+  /* inline-block sits on the text baseline, which would leave a descender's
+     worth of gap under every tile. */
+  vertical-align: top;
+  width: 100%;
+  /* The square tile of the grid variant, undone. */
+  min-height: 0;
+  aspect-ratio: auto;
+  margin-bottom: var(--gallery-grid-gap);
+  break-inside: avoid;
+}
+
+.gallery-grid--masonry .gallery-grid-link {
+  height: auto;
+}
+
+/* Taking the image out of absolute positioning is what lets the tile take its
+   height from the picture rather than the other way round. */
+.gallery-grid--masonry .gallery-grid-link img {
+  position: static;
+  display: block;
+  width: 100%;
+  height: auto;
+  /* One very tall object should not become a column of its own. Past this the
+     image crops from the centre, where an object usually is. */
+  max-height: var(--gallery-masonry-max-height, 26rem);
+  object-position: center;
+}
+
+/* A wall of pictures has less reason than most things to stop at a measure.
+   Where --wide breaks out to 64rem and centres, this goes to the full width of
+   the page. Use it for a page that is the gallery, not a page with one on it.
+   👉 Pass class="gallery-grid--bleed" to the include. */
+.container > .gallery-grid--bleed {
+  grid-column: full;
+  width: 100%;
+  margin-inline: 0;
+  padding-inline: var(--gallery-grid-gap);
+}

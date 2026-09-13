@@ -1,0 +1,52 @@
+{% comment %}
+  Compact Card TOC — compact linked rows with optional topic bullets
+
+  Parameters:
+    - rows: collection of page/card objects (required)
+
+  Recommended row fields:
+    - title:    card title
+    - summary:  short description
+    - topics:   optional list of subtopics
+    - link:     optional URL; falls back to page url
+    - position: sort order
+{% endcomment %}
+
+{% assign rows = include.rows | sort: "position" %}
+
+{::nomarkdown}
+{% if include.rows and rows.size > 0 %}
+  {% for row in rows %}
+    <div class="toc-row-compact">
+      {% assign link = row.link | default: row.url %}
+      {% capture link_resolved %}{% include helpers/link-path.html link=link %}{% endcapture %}
+      <a href="{{ link_resolved | strip }}">
+        <div class="toc-row-flex">
+          <div class="toc-body">
+            <h3>{{ row.title | default: 'Untitled' }}</h3>
+            {% if row.summary %}
+              <p>{{ row.summary }}</p>
+            {% endif %}
+            {% if row.topics %}
+              <ul>
+                {% for topic in row.topics %}
+                  <li>{{ topic }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+          <span class="toc-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
+              <polyline points="9,6 15,12 9,18" fill="none" stroke="var(--accent-border)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="xanthan-warning">
+    card-toc-compact include needs a rows collection.
+  </div>
+{% endif %}
+{:/nomarkdown}

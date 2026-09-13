@@ -1,0 +1,42 @@
+{% comment %}
+  UNM utility bar and official hanging logo.
+  overlap: boolean (default false) — let the logo extend over the next hero.
+  Place immediately before the hero, outside Xanthan's .container grid.
+  Loads no Bootstrap, global UNM styles, or university secondary navigation.
+{% endcomment %}
+<header class="unm-header{% unless include.overlap %} unm-header--standalone{% endunless %}">
+  <div class="unm-shell unm-header-inner">
+    <a class="unm-header-logo" href="https://www.unm.edu/">
+      <img src="{{ '/assets/unm/unm-logo.png' | relative_url }}" width="235" height="67" alt="The University of New Mexico">
+    </a>
+    <div class="unm-header-tools">
+      <nav class="unm-utility-links" aria-label="University resources">
+        <a href="https://directory.unm.edu/departments/">UNM A–Z</a>
+        <a href="https://my.unm.edu/">myUNM</a>
+        <a href="https://directory.unm.edu/">Directory</a>
+        <details class="unm-help"><summary>Help</summary>
+          <div class="unm-menu">
+            <a href="https://student.unm.edu/student-support.html">Student Support</a>
+            <a href="https://studentinfo.unm.edu/">StudentInfo</a>
+            <a href="https://fastinfo.unm.edu/">FastInfo</a>
+          </div>
+        </details>
+      </nav>
+      {% include unm/search-unm.html id='unm-search-desktop' %}
+    </div>
+    <details class="unm-mobile-tools">
+      <summary>UNM links</summary>
+      <div class="unm-menu">
+        <nav aria-label="University resources on mobile">
+          <a href="https://directory.unm.edu/departments/">UNM A–Z</a>
+          <a href="https://my.unm.edu/">myUNM</a>
+          <a href="https://directory.unm.edu/">Directory</a>
+          <a href="https://student.unm.edu/student-support.html">Student Support</a>
+          <a href="https://studentinfo.unm.edu/">StudentInfo</a>
+          <a href="https://fastinfo.unm.edu/">FastInfo</a>
+        </nav>
+        {% include unm/search-unm.html id='unm-search-mobile' %}
+      </div>
+    </details>
+  </div>
+</header>

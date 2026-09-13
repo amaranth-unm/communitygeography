@@ -1,0 +1,114 @@
+/*****************************************************
+TAGS
+
+The tag pills and the tag filter UI — the list of tags above a collection, the
+active state, the clear button, and the empty-result message.
+
+Loads:    every page
+Used by:  the tags page and any page rendering a tag list
+Needs:    base.css tokens (--tag-bg, --tag-hover-bg, --tag-text)
+Not here: tags rendered inside a card, which are card-scoped and live in
+          cards.css; buttons, which look similar and are sized differently
+          (buttons.css)
+*****************************************************/
+
+/* Tag pills (inline tags on cards) */
+.tag-pill {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background var(--transition-fast);
+  border-bottom: none;
+}
+
+/* Override a:visited from typography.css (loads after cards.css) */
+.tag-pill:visited {
+  color: var(--tag-text);
+  border-bottom: none;
+}
+
+.tag-pill:hover {
+  background: var(--tag-hover-bg);
+  color: var(--tag-text);
+}
+
+/* Tag filter UI */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem 0;
+  padding: 1rem 0;
+}
+
+.tag-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: var(--bg-card);
+  border: 2px solid var(--border-light);
+  color: var(--text-body);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.tag-badge:hover {
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.tag-badge.active {
+  background: var(--accent-primary-dark);
+  color: var(--tag-text);
+  border-color: var(--accent-primary-dark);
+}
+
+.tag-clear {
+  background: var(--accent-primary-dark);
+  color: var(--tag-text);
+  border-color: var(--accent-primary-dark);
+}
+
+.tag-clear:hover {
+  background: var(--tag-hover-bg);
+  border-color: var(--interactive-hover);
+}
+
+/* Tag page text */
+.tag-help {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.tag-help code {
+  background: var(--bg-code);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.tag-summary {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.tag-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+}

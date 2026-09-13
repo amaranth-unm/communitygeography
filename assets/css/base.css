@@ -1,0 +1,516 @@
+/*****************************************************
+BASE
+
+The bottom of the stack: the colour palette, the semantic token layer every
+other stylesheet builds on, the reset, the `.container` grid, the section
+bands, the small-screen rules for the text column, and the accessibility
+utilities.
+
+Everything a theme can change, it changes from here. Nothing in this file is a
+component — components have their own stylesheets, named for what they style.
+Do not add one here because this file is already open.
+
+The `.container` grid is worth understanding before editing any component. It
+defines two named columns, `content` (the reading measure) and `full` (the
+window). Children default to `content`; anything that needs to span the window
+claims `grid-column: full` and re-centres its own contents.
+
+Loads:    every page, first
+Used by:  every layout and every other stylesheet
+Needs:    nothing
+Not here: prose and headings (typography.css), which read as "base" but are
+          not; buttons (buttons.css); the footer (footer.css); figures and the
+          carousel (images.css); the jumbotron (jumbotron.css); the feature
+          grid (feature-grid.css)
+*****************************************************/
+
+/* Font imports - all fonts used throughout the site */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;700&display=swap');
+
+@media screen {
+/*****************************************************
+PAGE SETUP & CUSTOMIZATION
+
+👉 Want to customize your site's colors?
+   See guides/customizing-colors.md for quick changes
+   See guides/using-themes.md to create a complete theme
+*****************************************************/
+
+/* --- Reset & Base --- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+  :root {
+  /* ===== NAMED COLORS - Friendly Modern Palette ===== */
+  /* Sage/green family (lightest to darkest) */
+  --sage-pale: #b2cdbc;    /* Lightest sage tint */
+  --sage: #6b8e7f;         /* Primary sage green */
+  --sage-deep: #3d4e42;    /* Deep sage */
+  --sage-dark: #2d3e35;    /* Darkest sage, almost black */
+
+  /* Warm neutrals */
+  --warm-white: #f5f3f0;   /* Warm off-white */
+  --warm-light: #e8e4df;   /* Light warm tone for cards */
+  --golden-wash: color-mix(in srgb, var(--golden-clay) 18%, var(--bg-page));  /* Clay-tinted wash for special sections */
+
+  /* Syntax highlighting tints — legible on a dark code block */
+  --syntax-sand: #dcc89c;
+  --syntax-mint: #a9caa1;
+  --syntax-sky: #9ec0d6;
+  --syntax-coral: #dfa084;
+  --syntax-quiet: #93a89a;
+
+  /* Accent colors */
+  --golden-clay: #b8956a;  /* Warm clay */
+  --golden-clay-dark: #8b6f47;  /* Darker warm clay for headings */
+  --amber: #f59e0b;        /* Bright amber */
+  --trail-red: #8c2f10;    /* Route lines over pale map scans, where clay and sage both vanish */
+
+  /* ===== SEMANTIC COLOR SYSTEM ===== */
+  /* Backgrounds */
+  --bg-page: var(--warm-white);
+  --bg-card: var(--warm-light);
+  --bg-accent: var(--golden-wash);
+  --bg-code: var(--sage-pale);
+
+  /* Fenced code blocks are dark; inline code stays light inside prose */
+  --bg-code-block: var(--sage-dark);
+  --text-code-block: var(--warm-white);
+  --code-key: var(--syntax-sand);
+  --code-string: var(--syntax-mint);
+  --code-name: var(--syntax-sky);
+  --code-literal: var(--syntax-coral);
+  --code-quiet: var(--syntax-quiet);
+  --bg-nav: var(--sage-deep);
+  --bg-section-alt: var(--bg-card);
+  /* A flat stand-in for the alt band, for components that need a colour rather
+     than a background — a gradient cannot be a colour stop inside another
+     gradient. Themes whose alt band is a gradient must override this with a
+     representative solid. */
+  --bg-section-alt-flat: var(--bg-card);
+  --border-section-alt: color-mix(in srgb, var(--accent-primary) 16%, transparent);
+  --shadow-section-alt: inset 0 1px 0 var(--border-section-alt), inset 0 -1px 0 var(--border-section-alt);
+  --text-section-alt-heading: var(--text-h2);
+  --text-section-cool-heading: var(--text-h2);
+  --bg-section-cool: color-mix(in srgb, var(--accent-primary) 10%, var(--bg-page));
+  --border-section-cool: color-mix(in srgb, var(--accent-primary) 20%, transparent);
+  --shadow-section-cool: inset 0 1px 0 var(--border-section-cool), inset 0 -1px 0 var(--border-section-cool);
+  --bg-section-warm: var(--bg-accent);
+  --text-section-warm: var(--text-body);
+  --text-section-warm-heading: var(--text-h2);
+  --text-section-warm-link: var(--accent-primary);
+  --text-section-warm-link-hover: var(--interactive-hover);
+  --border-section-warm: var(--accent-border);
+  --border-section-accent: var(--accent-primary);
+  --hero-tagline-color: var(--text-muted);
+  --button-bg: var(--accent-primary);
+  --button-hover-bg: var(--interactive-hover-bg);
+  --button-text: var(--text-on-dark);
+  --button-hover-text: var(--text-on-dark);
+  --tag-bg: var(--accent-primary);
+  --tag-hover-bg: var(--interactive-hover-bg);
+  --tag-text: var(--text-on-dark);
+  --card-bg: var(--bg-card);
+  --card-border: var(--border-light);
+  --card-hover-border: var(--interactive-hover);
+  --card-heading-color: var(--text-body);
+  --card-text-color: var(--text-muted);
+  --bg-feature-card: var(--bg-card);
+  --text-feature-card: var(--text-body);
+  --text-feature-card-muted: var(--text-muted);
+  --border-feature-card: var(--border-light);
+  --border-feature-card-hover: var(--interactive-hover);
+  --bg-feature-band: var(--sage-deep);
+  /* The dark laid over a photograph so light text stays readable on top of it.
+     Kept separate from --overlay-dark, which is neutral black; this one takes
+     the theme's own darkest tone so scrims sit in the same family as the page. */
+  --bg-scrim: var(--sage-dark);
+  /* Surface behind an image tile — visible while the image loads, and around it
+     if the image does not fill the tile. Darker than the band tiles sit on, so
+     a tile still reads as a tile before its picture arrives. */
+  --bg-tile: var(--sage-dark);
+  /* Translucent scrim for text laid directly over a photograph, as in a
+     jumbotron in image mode. Dark enough to carry light text, sheer enough
+     that the picture still reads through it. */
+  --bg-scrim-sheer: color-mix(in srgb, var(--bg-scrim) 72%, transparent);
+  --text-feature-band: var(--text-on-dark);
+  --text-feature-band-muted: color-mix(in srgb, var(--text-on-dark) 74%, transparent);
+  --text-feature-band-link: var(--sage-pale);
+  --text-feature-band-link-hover: var(--white);
+  --bg-editorial-note: color-mix(in srgb, var(--accent-primary) 9%, var(--bg-page));
+  --border-editorial-note: var(--accent-border);
+  --text-lede: color-mix(in srgb, var(--text-body) 82%, var(--accent-primary));
+  --text-kicker: var(--accent-primary-dark);
+  --metadata-border: color-mix(in srgb, var(--accent-primary) 28%, transparent);
+
+  /* Text */
+  --text-body: var(--sage-dark);
+  --text-on-dark: var(--warm-white);
+  --text-muted: #666;
+
+  /* Accents & Interactive */
+  --accent-primary: var(--sage);
+  --accent-border: var(--golden-clay);
+  --interactive-hover: var(--amber);
+  --interactive-hover-bg: var(--interactive-hover);
+  --interactive-subtle: color-mix(in srgb, var(--accent-primary) 18%, transparent);
+  --interactive-subtle-hover: color-mix(in srgb, var(--interactive-hover) 18%, transparent);
+
+  /* Status colors */
+  --success: #28a745;
+  --warning: #ffc107;
+  --warning-bg: #fff3cd;
+  --error: #dc3545;
+  --info: #5b9aa0;
+
+  /* Heading colors — override these in themes to change heading hierarchy */
+  --text-h1: var(--golden-clay);
+  --text-h2: var(--sage);
+  --text-h3: var(--sage-deep);
+  --text-h4: var(--sage-dark);
+  --text-h5: var(--golden-clay-dark);
+
+  /* Utility */
+  --overlay-dark: rgba(0, 0, 0, 0.8);
+  --gallery-caption-rest: color-mix(in srgb, var(--overlay-dark) 82%, transparent);
+  --gallery-caption-active: color-mix(in srgb, var(--overlay-dark) 94%, transparent);
+  --white: #ffffff;
+  /* Pure white, not the warm off-white of --text-on-dark. For text sitting on a
+     photograph or a near-black overlay, where the extra contrast is doing real
+     work and a warm tint reads as dirty. */
+  --text-on-photo: var(--white);
+  /* An input or panel that has to look like a writable surface, so it stays
+     white even on themes whose page background is tinted. */
+  --bg-field: var(--white);
+  --border-light: rgba(0, 0, 0, 0.1);
+  --border-medium: color-mix(in srgb, var(--text-body) 20%, transparent);
+  --border-on-dark: rgba(255, 255, 255, 0.2); /* Borders/dividers on dark backgrounds */
+  --accent-primary-dark: var(--sage-deep);     /* Darker accent for active/selected states */
+
+  /* Story maps. These are read by assets/js/story-map.js through
+     getComputedStyle rather than used in a rule, because Leaflet writes them
+     as SVG presentation attributes, where var() does not resolve. Changing
+     them here still changes the map — that indirection is the whole point. */
+  --map-route: var(--trail-red);               /* Route and boundary lines */
+  --map-place: var(--amber);                   /* Place markers */
+  --map-marker-edge: var(--sage-dark);         /* Outline around place markers */
+
+  /* Shadows */
+  --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 12px color-mix(in srgb, var(--interactive-hover) 40%, transparent);
+
+  /* Fonts */
+  --font-heading: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-serif: 'Lora', serif;
+  --font-mono: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  /* Border radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 1s ease-in-out;
+
+  /* Footer */
+  --bg-footer: var(--sage);
+  --bg-footer-bottom: var(--sage-deep);
+  --text-footer-link: var(--warm-white);
+  --text-footer-bottom: var(--sage-pale);
+
+  /* Page headers */
+  --bg-page-header: #161618;
+  --page-header-grid-line: rgba(255, 255, 255, 1);
+  --page-header-divider-line: rgba(255, 255, 255, 0.12);
+  --page-header-divider-text: rgba(255, 255, 255, 0.28);
+  --page-header-subtitle: rgba(255, 255, 255, 0.70);
+  --page-header-caption: rgba(255, 255, 255, 0.75);
+  --page-header-caption-hover: rgba(255, 255, 255, 0.85);
+  --page-header-title-shadow: 0 1px 4px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 0, 0, 0.35);
+  --page-header-subtitle-shadow: 0 1px 4px rgba(0, 0, 0, 0.75), 0 0 28px rgba(0, 0, 0, 0.45);
+  --page-header-section-title-shadow: 0 0 25px rgba(0, 0, 0, 0.95), 0 0 55px rgba(0, 0, 0, 0.75), 0 0 90px rgba(0, 0, 0, 0.45);
+  --page-header-top-scrim: rgba(0, 0, 0, 0.45);
+  --page-header-caption-scrim: rgba(0, 0, 0, 0.72);
+}
+
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+}
+
+.page-wrap {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/*
+  CSS Grid full-bleed layout.
+  Named lines create two zones:
+    full:    spans the full container width (for jumbotrons, section backgrounds)
+    content: centered content column, max 48rem wide
+
+  All direct children default to the content column.
+  Full-bleed elements use: grid-column: full;
+*/
+.container {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--spacing-sm), 1fr)
+    [content-start] min(48rem, 100% - 2 * var(--spacing-sm))
+    [content-end] minmax(var(--spacing-sm), 1fr)
+    [full-end];
+}
+
+.container > * {
+  grid-column: content;
+}
+
+.xanthan-warning {
+  grid-column: content;
+  margin: var(--spacing-md) 0;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px dashed var(--warning);
+  border-radius: var(--radius-sm);
+  background: var(--warning-bg);
+  color: var(--text-body);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+
+/*****************************************************
+SECTION BACKGROUNDS - Subtle visual rhythm
+*****************************************************/
+
+/* Alternating section backgrounds for visual hierarchy - full width */
+.section-alt {
+  grid-column: full;
+  background: var(--bg-section-alt);
+  padding: var(--spacing-xl) max(var(--spacing-sm), calc(50% - 24rem));
+  box-shadow: var(--shadow-section-alt);
+}
+
+.section-alt h2:first-child {
+  margin-top: 0;
+}
+
+/* Headings on a tinted band take a colour from that band's own family. The
+   default heading colour is tuned for the page background, and repeating it
+   on a coloured field reads flat. */
+.section-alt h2 {
+  color: var(--text-section-alt-heading);
+}
+
+/* A second tinted band, distinct from .section-alt, so two banded sections on
+   one page do not read as the same interruption twice. */
+.section-cool {
+  grid-column: full;
+  background: var(--bg-section-cool);
+  padding: var(--spacing-xl) max(var(--spacing-sm), calc(50% - 24rem));
+  box-shadow: var(--shadow-section-cool);
+}
+
+.section-cool h2:first-child {
+  margin-top: 0;
+}
+
+.section-cool h2 {
+  color: var(--text-section-cool-heading);
+}
+
+/* Themed section background - for special emphasis moments */
+.section-warm {
+  grid-column: full;
+  background-color: var(--bg-section-warm);
+  border-top: 2px solid var(--border-section-warm);
+  border-bottom: 2px solid var(--border-section-warm);
+  padding: var(--spacing-lg) max(var(--spacing-sm), calc(50% - 24rem));
+}
+
+.section-warm h2:first-child {
+  margin-top: 0;
+}
+
+/* A band that wraps its own .container would otherwise indent twice — its own
+   padding plus the container's gutter — leaving banded sections ~1rem inside
+   the rest of the page. Let the inner container do the centering instead. */
+.section-alt:has(> .container),
+.section-cool:has(> .container),
+.section-warm:has(> .container) {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.section-warm {
+  color: var(--text-section-warm);
+}
+
+.section-warm h2 {
+  color: var(--text-section-warm-heading);
+}
+
+.section-warm a,
+.section-warm a:visited {
+  color: var(--text-section-warm-link);
+  border-bottom-color: var(--text-section-warm-link);
+}
+
+.section-warm a:hover {
+  color: var(--text-section-warm-link-hover);
+  border-bottom-color: var(--text-section-warm-link-hover);
+}
+
+/* Accent border on left side - modern touch */
+.section-accent {
+  border-left: 4px solid var(--border-section-accent);
+  padding-left: var(--spacing-lg);
+  margin-left: var(--spacing-md);
+}
+
+/* Two-column layout utility. Applied by an author in Markdown with
+   {: .two-columns} on a list; no include emits it. */
+.two-columns {
+  column-count: 2;
+  column-gap: var(--spacing-lg);
+  list-style: none;
+  padding-left: 0;
+  margin-top: var(--spacing-lg);
+}
+
+.two-columns li {
+  break-inside: avoid;
+  margin-bottom: var(--spacing-sm);
+}
+
+@media (max-width: 768px) {
+  .two-columns {
+    column-count: 1;
+  }
+}
+
+
+} /* end media screen */
+
+
+
+/*****************************************************************************/
+/*
+/* SMALL SCREEN
+/*
+/*****************************************************************************/
+
+@media (max-width: 768px) {
+
+  /* Remove container padding on mobile so images can be full width */
+  .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  /* Add padding back to text elements */
+  .container p,
+  .container h1,
+  .container h2,
+  .container h3,
+  .container h4,
+  .container h5,
+  .container h6,
+  .container ul,
+  .container ol,
+  .container blockquote,
+  .container .pullquote,
+  .container .alert,
+  .container .lede,
+  .container .lead,
+  .container .section-intro,
+  .container .metadata-strip,
+  .container .field-note,
+  .container .evidence-note {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+
+  /* On small screens, figures fill the full content column width */
+  figure {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-self: stretch !important;
+    margin-bottom: var(--spacing-md);
+  }
+
+}
+
+/*****************************************************
+ACCESSIBILITY UTILITIES
+*****************************************************/
+
+/* Available to assistive technology, invisible on screen. Use for labels that
+   would be redundant sighted but are needed by a screen reader. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link — hidden until focused, then pinned to the top-left so a keyboard
+   user can jump past the navigation instead of tabbing through every menu. */
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  padding: var(--spacing-xs) var(--spacing-md);
+  background: var(--bg-page);
+  color: var(--text-body);
+  border: 2px solid var(--accent-primary);
+  border-radius: 0 0 var(--radius-sm) 0;
+  transform: translateY(-120%);
+  transition: transform var(--transition-fast);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: none;
+}
+
+/* Motion is a preference, not a detail. Anything animated for decoration is
+   reduced to a near-instant change; components with their own motion logic
+   (the carousel, auto-scroll) check the same query in JS. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

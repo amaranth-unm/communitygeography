@@ -1,0 +1,124 @@
+/*****************************************************
+JUMBOTRON
+
+The full-bleed image band with text laid over it, placed in a page body.
+
+Loads:    every page
+Used by:  images/jumbotron.html
+Needs:    base.css tokens; breaks out of the text column via the `.container`
+          grid's `full` line
+Not here: the page header drawn from front matter (page-header.css) and the
+          home hero (home.css) — three ways to put text on a picture, and this
+          is the one you place mid-page
+*****************************************************/
+
+@media screen {
+
+/* 👉 To change text width or font, edit .jumbotron-content.
+      Use box-align: left | right | center in the include to position text
+      and control gradient direction. */
+.jumbotron {
+  /* Display */
+  display: flex;
+  align-items: center;
+
+  /* Grid breakout — full viewport width */
+  grid-column: full;
+  overflow: hidden;
+
+  /* A jumbotron is a callout: the text deliberately sits further out than the
+     page's text column, so the panel reads as a break in the page rather than
+     another paragraph. The inset scales with the viewport and never collapses
+     past --spacing-lg on narrow screens.
+     👉 Raise the 36rem to pull the text toward the centre, lower it to push
+        the text further out toward the edge. */
+  padding-inline: max(var(--spacing-lg), calc(50% - 36rem));
+
+  /* Visual */
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Text position + gradient direction — set via box-align parameter */
+.jumbotron--left   { justify-content: flex-start; }
+.jumbotron--right  { justify-content: flex-end; }
+.jumbotron--center { justify-content: center; }
+
+/* 👉 To change text width, padding, or font for all jumbotrons, edit here. */
+.jumbotron-content {
+  /* Box Model */
+  max-width: 42rem;
+  padding: var(--spacing-xl) 0;
+
+  /* Typography */
+  font-family: var(--font-body);
+  /* --jumbotron-text is set inline by the include when the author passes
+     text-color, and in image mode where the text sits on the photograph.
+     Left unset in the ordinary panel case, so the defaults below still apply
+     and a heading keeps its accent colour. */
+  color: var(--jumbotron-text, var(--text-body));
+}
+
+/* Shadow for legibility when text overlays busy image detail.
+   Disable via text-shadow=false when text sits on a solid/opaque area instead. */
+.jumbotron--text-shadow .jumbotron-content {
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Center mode: text overlays the image directly */
+.jumbotron--center .jumbotron-content {
+  text-align: center;
+  color: var(--jumbotron-text, var(--text-on-photo));
+}
+
+.jumbotron--center.jumbotron--text-shadow .jumbotron-content {
+  text-shadow:
+    0 0 20px rgba(0, 0, 0, 0.7),
+    0 0 50px rgba(0, 0, 0, 0.4);
+}
+
+.jumbotron-content h2 {
+  /* Box Model */
+  margin-top: 0;
+  margin-bottom: var(--spacing-md);
+
+  /* Typography */
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  color: var(--jumbotron-text, var(--text-h2));
+}
+
+.jumbotron--center .jumbotron-content h2 {
+  color: var(--jumbotron-text, var(--text-on-photo));
+}
+
+.jumbotron-text {
+  /* Typography */
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.jumbotron-text p {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .jumbotron {
+    min-height: 50vh;
+  }
+
+  .jumbotron-content {
+    max-width: 100%;
+    padding: var(--spacing-md) 0;
+  }
+
+  .jumbotron-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .jumbotron-text {
+    font-size: 1rem;
+  }
+}
+
+} /* end media screen */

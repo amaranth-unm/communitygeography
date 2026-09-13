@@ -1,0 +1,38 @@
+{% comment %}
+  Story Map Step — moves an open story map, without a panel of text
+
+  Most of the time you want maps/story-map-panel.html, which carries a step of
+  its own. Use this one for a beat with no words: a wide view between two
+  passages, or a change of overlay.
+
+  Parameters:
+    - map-id:    the id of the story map this belongs to (required)
+    - center:    "lat, lng" to move to (optional)
+    - zoom:      zoom level to settle at (optional)
+    - highlight: name of a GeoJSON feature to pick out; everything else dims (optional)
+    - overlay:   swap in a different scanned map by path (optional)
+    - opacity:   set the overlay's opacity, 0–1 (optional)
+
+  The marker is invisible; it only marks a place in the text.
+{% endcomment %}
+
+{% capture step_overlay %}{% if include.overlay %}{% include helpers/image-path.html image-path=include.overlay %}{% endif %}{% endcapture %}
+{% assign step_overlay = step_overlay | strip %}
+{% assign step_center = include.center | default: '' | split: ',' %}
+
+{% capture step_config %}{
+{% if step_center.size == 2 %}"center": {{ step_center | jsonify }},{% endif %}
+{% if include.zoom %}"zoom": {{ include.zoom }},{% endif %}
+{% if step_overlay != '' %}"overlay": {{ step_overlay | jsonify }},{% endif %}
+{% if include.opacity %}"opacity": {{ include.opacity }},{% endif %}
+"highlight": {{ include.highlight | default: '' | jsonify }}
+}{% endcapture %}
+
+{%- comment -%}
+  height comes from .story-map-step in story-map.css and is load-bearing:
+  IntersectionObserver reports nothing for a target with no area.
+{%- endcomment -%}
+<div class="story-map-step"
+     data-map-id="{{ include.map-id }}"
+     data-step="{{ step_config | strip | escape }}"
+     aria-hidden="true"></div>

@@ -1,0 +1,38 @@
+{% comment %}
+  Left Navigation — groups pages by toc-section in _data/nav-sections.yml
+
+  Parameters:
+    None. Configure sections in _data/nav-sections.yml and assign pages with:
+      toc-section: section-name
+      order: 1
+
+  Notes:
+    - Set a section's display value to "none" to hide the section heading.
+    - Empty sections are skipped.
+{% endcomment %}
+
+{% assign sorted_pages = site.pages | sort: 'order' %}
+
+{% if site.data.nav-sections.sections %}
+  {% for section in site.data.nav-sections.sections %}
+    {% assign section_pages = sorted_pages | where: 'toc-section', section.name %}
+
+    {% if section_pages.size > 0 %}
+      {% unless section.display == 'none' %}
+        <h2 class="left-bar-nav-section">{{ section.display }}</h2>
+      {% endunless %}
+
+      <ul>
+        {% for nav_page in section_pages %}
+          <li class="left-bar-nav-item{% if nav_page.url == page.url %} active{% endif %}">
+            <a href="{{ site.baseurl }}{{ nav_page.url }}">{{ nav_page.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <div class="xanthan-warning">
+    Navigation sections missing. Add sections to _data/nav-sections.yml.
+  </div>
+{% endif %}

@@ -1,0 +1,6 @@
+{% comment %}University search form. id: required unique input ID.{% endcomment %}
+<form action="https://search.unm.edu/search" method="get" class="unm-search" role="search" aria-label="University search">
+  <label class="unm-visually-hidden" for="{{ include.id }}">Search UNM</label>
+  <input id="{{ include.id }}" name="q" type="search" placeholder="Search" maxlength="255">
+  <button type="submit" aria-label="Search UNM"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="10" cy="10" r="6" fill="none" stroke="currentColor" stroke-width="3"/><path d="m15 15 6 6" stroke="currentColor" stroke-width="3"/></svg></button>
+</form>

@@ -1,0 +1,82 @@
+{% comment %}
+  Figure Map — a historic map with data on it, sitting in the text column
+
+  The plain version of the story map: one map, no scrolling, no panels. Give it
+  a scanned map and the coordinates of that scan's corners, and it places the
+  image on the world; give it a GeoJSON file and it draws routes and places on
+  top. Either half works without the other.
+
+  Example:
+
+    {% raw %}{% include maps/figure-map.html
+         overlay-image="/assets/images/maps/whipple-1854.webp"
+         overlay-bounds="32.45416, -119.73999, 37.10777, -106.34216"
+         overlay-alt="Whipple's 1854 survey of a railroad route near the 35th parallel"
+         geojson="/assets/data/old-spanish-trail.geojson"
+         caption="Whipple's survey, with the Old Spanish Trail drawn over it." %}{% endraw %}
+
+  Map parameters:
+    - map-id:      unique id, needed only if the page holds more than one map
+                   (default: figure-map)
+    - center:      "lat, lng" opening view (optional; defaults to the overlay)
+    - zoom:        opening zoom level (optional)
+    - height:      CSS height (default: 32rem)
+    - interactive: false to stop the reader panning and zooming (default: true)
+    - caption:     text printed under the map (optional)
+
+  Historic overlay parameters:
+    - overlay-image:   the scanned map to lay on the world (optional)
+    - overlay-bounds:  "south, west, north, east" corners of that image (required with it)
+    - overlay-alt:     description of the scan for screen readers
+    - overlay-opacity: 0–1 (default: 0.9)
+
+  Data parameters:
+    - geojson:     path to a GeoJSON file of routes and places (optional)
+
+  Basemap parameters:
+    - basemap:             XYZ tile URL template drawn under the overlay (optional)
+    - basemap-opacity:     0–1 (default: 0.5)
+    - basemap-attribution: credit for the basemap
+    - attribution:         credit for the historic map and data
+{% endcomment %}
+
+{% if include.overlay-image and include.overlay-bounds == nil %}
+  <div class="xanthan-warning">
+    Figure map: <code>overlay-image</code> also needs <code>overlay-bounds</code>
+    — "south, west, north, east" — or the scan cannot be placed on the world.
+  </div>
+{% elsif include.overlay-image == nil and include.geojson == nil and include.basemap == nil %}
+  <div class="xanthan-warning">
+    Figure map: give it an <code>overlay-image</code>, a <code>geojson</code>
+    file, or a <code>basemap</code> — otherwise there is nothing to draw.
+  </div>
+{% else %}
+
+{% include maps/map-assets.html %}
+{% include maps/map-config.html
+   overlay-image=include.overlay-image
+   overlay-bounds=include.overlay-bounds
+   overlay-alt=include.overlay-alt
+   overlay-opacity=include.overlay-opacity
+   geojson=include.geojson
+   center=include.center
+   zoom=include.zoom
+   basemap=include.basemap
+   basemap-opacity=include.basemap-opacity
+   basemap-attribution=include.basemap-attribution
+   attribution=include.attribution
+   interactive=include.interactive %}
+
+{% assign figure_id = include.map-id | default: 'figure-map' %}
+
+<figure class="story-map-figure">
+  <div class="story-map"
+       id="{{ figure_id }}"
+       style="height: {{ include.height | default: '32rem' }}"
+       data-story-map="{{ xanthan_map_config | strip | escape }}"></div>
+  {% if include.caption %}
+    <figcaption class="story-map-caption">{{ include.caption }}</figcaption>
+  {% endif %}
+</figure>
+
+{% endif %}

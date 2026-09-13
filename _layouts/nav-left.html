@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+
+{% include html/html-head.html %}
+
+<body>
+
+    {% include nav/skip-link.html %}
+
+  <div class="left-bar">
+    {% include nav/nav-left.html %}
+  </div>
+
+  <div class="main-content">
+
+    {% include nav/nav-top.html %}
+
+    <main id="main">
+      <div class="container">
+        {{ content }}
+      </div>
+    </main>
+    
+    {% include layout/footer.html %}
+
+  {% include nav/search.html %}
+
+  </div> <!-- main-content -->
+
+  {% include html/html-js.html %}
+
+</body>
+</html>

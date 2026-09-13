@@ -1,0 +1,67 @@
+{% comment %}
+  Card Grid Component
+
+  Usage:
+    {% include cards/card-grid.html cards=pages show-tags=true %}
+
+  Parameters:
+    - heading-level: 2–6, level for each item title (default: 3)
+    - cards: array of page/card objects to display
+    - show-tags: (optional, default true) whether to display tags on cards
+    - grid-class: (optional) additional CSS classes for the grid
+    - tag-data: (optional, default false) add data-tags attribute for filtering
+
+  Per-card image control: see helpers/card-image.html for thumbnail, thumbnail-position, thumbnail-zoom
+{% endcomment %}
+
+{% assign show_tags = include.show-tags | default: true %}
+{% assign heading_level = include.heading-level | default: 3 %}
+{% assign grid_class = include.grid-class | default: "" %}
+{% assign tag_data = include.tag-data | default: false %}
+{% assign sorted_cards = include.cards | sort: "position" %}
+
+{::nomarkdown}
+{% if include.cards and sorted_cards.size > 0 %}
+  <div class="card-grid {{ grid_class }}">
+    {% for card in sorted_cards %}
+    {% if card.title %}
+      {% assign card_image = card.thumbnail %}
+      {% assign card_href = card.link | default: card.url %}
+      {% capture card_href_resolved %}{% include helpers/link-path.html link=card_href %}{% endcapture %}
+      {% comment %} Only auto-derived excerpts get truncated; authored summaries print in full. {% endcomment %}
+      {% assign card_excerpt = card.excerpt | strip_html | truncate: 160 %}
+      {% assign card_summary = card.summary | default: card.description | default: card_excerpt | strip_html %}
+      {% if tag_data and card.tags %}
+        {% assign page_tags = card.tags | join: "|" | downcase %}
+      {% endif %}
+      <article class="card v-card{% if tag_data %} tag-card{% endif %}"{% if tag_data and page_tags %} data-tags="{{ page_tags }}"{% endif %}>
+        <a class="card-link" href="{{ card_href_resolved | strip }}">
+          {% if card_image %}
+            {% include helpers/card-image.html card=card class="card-img-top" %}
+          {% endif %}
+          <div class="card-body">
+            <div>
+              {% if card.kicker %}<p class="card-kicker">{{ card.kicker }}</p>{% endif %}
+              <h{{ heading_level }}>{{ card.title }}</h{{ heading_level }}>
+              {% if card.byline %}<p class="card-byline">{{ card.byline }}</p>{% endif %}
+              <p class="card-text">{{ card_summary }}</p>
+            </div>
+            {% if show_tags and card.tags %}
+              <div class="tags">
+                {% for t in card.tags %}
+                  <span class="tag-pill">{{ t }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </a>
+      </article>
+    {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="xanthan-warning">
+    card-grid include needs a cards collection.
+  </div>
+{% endif %}
+{:/nomarkdown}

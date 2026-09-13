@@ -1,0 +1,119 @@
+{% comment %}
+  Gallery Grid — image-first navigation for collections
+
+  Usage:
+    {% include nav/gallery-grid.html items=site.pages %}
+
+  Parameters:
+    - heading:       optional section heading, aligned to the grid's left edge
+    - intro:         optional paragraph under the heading (markdown supported)
+    - heading-level: 2–6, level for each item title (default: 3)
+    - items: collection of page/card objects to display (required)
+    - variant: layout style, "mosaic", "uniform" or "masonry" (optional, default "mosaic")
+               masonry keeps each image's own proportions instead of cropping
+               tiles to a square; pair it with class="gallery-grid--bleed" for
+               a page that is nothing but the gallery
+    - min-width: minimum tile width for responsive grid columns, and the column
+                 width itself under "masonry" (optional, default "180px")
+    - gap: spacing between tiles (optional, default "var(--spacing-xs)")
+    - max-height: under "masonry", the tallest a tile may grow before its image
+      crops from the centre (optional, default "26rem")
+    - image-field: front matter field used for images (optional, default "thumbnail")
+    - show-title: whether to show item titles over images (optional, default true)
+    - show-summary: whether to show summaries over images (optional, default false)
+    - class: additional CSS classes for the gallery wrapper (optional)
+
+  Recommended item fields:
+    - title: card title
+    - thumbnail: path to image, unless image-field names a different field
+    - summary: short description, used when show-summary=true
+    - link: optional URL; falls back to page url
+    - position: sort order
+
+  Gallery Grid is a navigation component. Use images/figure.html for displaying
+  a single image as content.
+{% endcomment %}
+
+{% assign items = include.items | sort: "position" %}
+{% assign heading_level = include.heading-level | default: 3 %}
+{% assign variant = include.variant | default: "mosaic" %}
+{% assign min_width = include.min-width | default: "180px" %}
+{% assign gap = include.gap | default: "var(--spacing-xs)" %}
+{% assign max_height = include.max-height | default: "26rem" %}
+{% comment %}
+  A ceiling on how many columns the masonry variant may open, so that a small
+  collection does not balance itself into a few narrow columns at the left of a
+  wide screen with the rest of the page empty. Half the item count, rounded up,
+  is the number that keeps every column about two tiles deep — which is what
+  makes a masonry read as a masonry rather than as one ragged row. A collection
+  large enough never reaches the ceiling and is laid out as though it were not
+  there.
+{% endcomment %}
+{% assign column_ceiling = include.items.size | plus: 1 | divided_by: 2 %}
+{% if column_ceiling < 2 %}{% assign column_ceiling = 2 %}{% endif %}
+{% assign image_field = include.image-field | default: "thumbnail" %}
+{% assign show_title = true %}
+{% if include.show-title == false or include.show-title == "false" %}
+  {% assign show_title = false %}
+{% endif %}
+{% assign show_summary = false %}
+{% if include.show-summary == true or include.show-summary == "true" %}
+  {% assign show_summary = true %}
+{% endif %}
+{% assign gallery_class = include.class | default: "" %}
+
+{::nomarkdown}
+{% if include.heading or include.intro %}
+  {% comment %}
+    Rendered here rather than written above the include so the heading sits on
+    the grid's own left edge. A heading in the page body would sit on the
+    narrower text column and the two would read as unrelated blocks.
+  {% endcomment %}
+  <div class="wide-header">
+    {% if include.heading %}<h2>{{ include.heading }}</h2>{% endif %}
+    {% if include.intro %}{{ include.intro | markdownify }}{% endif %}
+  </div>
+{% endif %}
+{% if include.items and items.size > 0 %}
+  <div
+    class="gallery-grid gallery-grid--{{ variant }} {{ gallery_class }}"
+    style="--gallery-grid-min-width: {{ min_width }}; --gallery-grid-gap: {{ gap }}; --gallery-masonry-max-height: {{ max_height }}; --gallery-grid-columns: {{ column_ceiling }};"
+  >
+    {% for item in items %}
+      {% assign item_image = item[image_field] | default: item.thumbnail | default: item.header-image %}
+      {% assign item_href = item.link | default: item.url %}
+      {% capture item_href_resolved %}{% include helpers/link-path.html link=item_href %}{% endcapture %}
+      {% comment %} Only auto-derived excerpts get truncated; authored summaries print in full. {% endcomment %}
+      {% assign item_excerpt = item.excerpt | strip_html | truncate: 120 %}
+      {% assign item_summary = item.summary | default: item.description | default: item_excerpt | strip_html %}
+
+      {% if item.title and item_image %}
+        {% capture item_image_url %}{% include helpers/image-path.html image-path=item_image page-dir=item.dir %}{% endcapture %}
+        <article class="gallery-grid-item">
+          <a href="{{ item_href_resolved | strip }}" class="gallery-grid-link">
+            <img src="{{ item_image_url | strip }}" alt="{{ item.alt-text | default: item.title | escape }}">
+            {% if show_title or show_summary %}
+              <div class="gallery-grid-caption">
+                {% if show_title %}
+                  <h{{ heading_level }}>{{ item.title }}</h{{ heading_level }}>
+                {% endif %}
+                {% if show_summary and item_summary %}
+                  <p>{{ item_summary }}</p>
+                {% endif %}
+              </div>
+            {% endif %}
+          </a>
+        </article>
+      {% elsif item.title %}
+        <div class="xanthan-warning">
+          gallery-grid item "{{ item.title }}" needs an image field.
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="xanthan-warning">
+    gallery-grid include needs an items collection.
+  </div>
+{% endif %}
+{:/nomarkdown}

@@ -1,0 +1,29 @@
+{% comment %}
+  Feature Row — text plus a button link
+
+  Parameters:
+    - title:      heading text (required)
+    - text:       description text (required)
+    - link:       button URL (required)
+    - button:     button label (optional; defaults to title)
+    - text-width: text column width as a percentage number (default: 50)
+{% endcomment %}
+
+{% assign text_width = include.text-width | default: "50" %}
+{% assign button_label = include.button | default: include.title %}
+
+{% if include.title and include.text and include.link %}
+  <div style="display: flex; align-items: center; gap: var(--spacing-md); margin-bottom: var(--spacing-lg);">
+    <div style="flex: 1; max-width: {{ text_width }}%;">
+      <h5 style="margin-top: 0;">{{ include.title }}</h5>
+      <p style="margin-bottom: 0;">{{ include.text }}</p>
+    </div>
+    <div style="flex: 0 0 auto;">
+      <a href="{{ include.link }}" class="btn-secondary">{{ button_label }} →</a>
+    </div>
+  </div>
+{% else %}
+  <div class="xanthan-warning">
+    feature-row include needs title, text, and link parameters.
+  </div>
+{% endif %}

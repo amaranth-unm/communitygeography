@@ -1,0 +1,80 @@
+{% comment %}
+  Story Map — a historic map pinned to the viewport while text scrolls over it
+
+  Opens a full-width map that stays put while the reader scrolls. Passages of
+  text ride over it in panels, and each panel can move the map to a new place.
+
+  ⚠️ This include opens structure it does not close. Finish the sequence with
+     maps/story-map-end.html or the rest of the page ends up inside the map.
+
+  A full sequence looks like:
+
+    {% raw %}{% include maps/story-map.html map-id="trail"
+         overlay-image="/assets/images/maps/whipple-1854.webp"
+         overlay-bounds="32.45416, -119.73999, 37.10777, -106.34216"
+         overlay-alt="Whipple's 1854 survey map of the 35th parallel"
+         geojson="/assets/data/old-spanish-trail.geojson" %}
+
+    {% include maps/story-map-panel.html map-id="trail" center="35.69, -105.94" zoom=8 %}
+    Your prose, in ordinary Markdown.
+    {% include maps/story-map-panel-end.html %}
+
+    {% include maps/story-map-end.html %}{% endraw %}
+
+  Map parameters:
+    - map-id:          unique id for this map (required)
+    - center:          "lat, lng" opening view (optional; defaults to the overlay)
+    - zoom:            opening zoom level (optional)
+    - height:          CSS height of the pinned map (default: 100vh)
+    - interactive:     false to stop the reader panning and zooming (default: true)
+
+  Historic overlay parameters:
+    - overlay-image:   the scanned map to lay on the world (optional)
+    - overlay-bounds:  "south, west, north, east" corners of that image (required with it)
+    - overlay-alt:     description of the scan for screen readers
+    - overlay-opacity: 0–1 (default: 0.9)
+
+  Data parameters:
+    - geojson:         path to a GeoJSON file of routes and places (optional)
+
+  Basemap parameters:
+    - basemap:             XYZ tile URL template drawn under the overlay (optional)
+    - basemap-opacity:     0–1 (default: 0.5)
+    - basemap-attribution: credit for the basemap
+    - attribution:         credit for the historic map and data
+{% endcomment %}
+
+{% if include.map-id == nil or include.map-id == '' %}
+  <div class="xanthan-warning">
+    Story map: this include needs a <code>map-id</code>.
+  </div>
+{% else %}
+
+{% include maps/map-assets.html %}
+{% include maps/map-config.html
+   overlay-image=include.overlay-image
+   overlay-bounds=include.overlay-bounds
+   overlay-alt=include.overlay-alt
+   overlay-opacity=include.overlay-opacity
+   geojson=include.geojson
+   center=include.center
+   zoom=include.zoom
+   basemap=include.basemap
+   basemap-opacity=include.basemap-opacity
+   basemap-attribution=include.basemap-attribution
+   attribution=include.attribution
+   interactive=include.interactive %}
+
+{::nomarkdown}
+</div> <!-- close container so the map can run full width -->
+{:/nomarkdown}
+
+<div class="story-map-container" id="{{ include.map-id }}-container">
+
+  <div class="story-map"
+       id="{{ include.map-id }}"
+       style="height: {{ include.height | default: '100vh' }}"
+       data-story-map="{{ xanthan_map_config | strip | escape }}">
+  </div>
+
+{% endif %}

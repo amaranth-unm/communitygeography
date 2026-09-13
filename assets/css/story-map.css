@@ -1,0 +1,179 @@
+/*****************************************************
+STORY MAP
+
+A historic map image placed on real coordinates, with routes and places drawn
+over it. Two arrangements share these styles:
+
+  .story-map-container   the map pins to the viewport while text scrolls over it
+  .story-map-figure      the map sits in the text column like an illustration
+
+The sticky arrangement mirrors backgrounds.css `.bg-multi-container` /
+`.bg-multi` — same structure, same reason. A reader who has understood one has
+understood the other.
+
+Loads:    via the maps/ includes, which link it themselves
+Used by:  maps/story-map.html, maps/figure-map.html, assets/js/story-map.js
+Needs:    base.css tokens; Leaflet's own stylesheet must load first
+Not here: collection-map popups (map.css) — that is a different component
+*****************************************************/
+
+/*****************************************************
+THE MAP ITSELF
+*****************************************************/
+
+/* Leaflet measures its container on init and silently renders nothing if that
+   container has no height. Every arrangement below therefore sets one. */
+.story-map {
+  /* Box Model */
+  width: 100%;
+
+  /* Visual */
+  background: var(--bg-field);
+}
+
+.story-map-container {
+  /* Positioning */
+  position: relative;
+}
+
+.story-map-container > .story-map {
+  /* Positioning */
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 0;
+
+  /* Box Model */
+  height: 100vh;
+}
+
+/* The illustration arrangement: no stickiness, height comes from the include. */
+.story-map-figure {
+  /* Box Model */
+  margin: var(--spacing-xl) 0;
+}
+
+.story-map-figure > .story-map {
+  /* Visual */
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+}
+
+.story-map-caption {
+  /* Box Model */
+  margin-top: var(--spacing-sm);
+
+  /* Typography */
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+/*****************************************************
+TEXT OVER THE MAP
+*****************************************************/
+
+/* 👉 To change the width or look of every passage that floats over a story
+      map, edit this block. */
+.story-map-panel {
+  /* Positioning */
+  position: relative;
+  z-index: 1;
+
+  /* Box Model */
+  max-width: 30rem;
+  margin: var(--spacing-lg) auto;
+  padding: var(--spacing-md) var(--spacing-lg);
+
+  /* Typography */
+  font-family: var(--font-serif);
+  line-height: 1.6;
+  color: var(--text-body);
+
+  /* Visual */
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* Alignment variants — use panel-align: left | right in the include */
+.story-map-panel--left {
+  margin-left: 5%;
+  margin-right: auto;
+}
+
+.story-map-panel--right {
+  margin-left: auto;
+  margin-right: 5%;
+}
+
+/*****************************************************
+SCROLL MARKERS
+*****************************************************/
+
+/* height: 1px is load-bearing, not decoration — the same constraint as
+   scrollybox/bg-switch.html. IntersectionObserver reports nothing for a
+   zero-area target, and these markers hold no content, so without a height
+   they never intersect and the map never moves. */
+.story-map-step {
+  height: 1px;
+}
+
+/*****************************************************
+POPUPS
+
+`.leaflet-*` names belong to Leaflet and are not renamed to match Xanthan's
+conventions; they are overridden so popups match the site.
+*****************************************************/
+
+.story-map-popup h3 {
+  /* Box Model */
+  margin: 0 0 var(--spacing-xs);
+
+  /* Typography */
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  line-height: 1.3;
+}
+
+.story-map-popup-place {
+  /* Box Model */
+  margin: 0 0 var(--spacing-xs);
+
+  /* Typography */
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.story-map-popup-text {
+  /* Box Model */
+  margin: 0;
+  max-height: 11rem;
+  overflow-y: auto;
+
+  /* Typography */
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/*****************************************************
+RESPONSIVE
+
+On a narrow screen the panel stops being a floating card and becomes a band
+across the map: 30rem does not fit beside anything on a phone, and the
+alignment variants have nothing left to align against.
+*****************************************************/
+
+@media (max-width: 640px) {
+  .story-map-panel,
+  .story-map-panel--left,
+  .story-map-panel--right {
+    /* Box Model */
+    max-width: none;
+    margin-left: var(--spacing-sm);
+    margin-right: var(--spacing-sm);
+  }
+}

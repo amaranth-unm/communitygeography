@@ -1,0 +1,80 @@
+/*****************************************************
+SCROLLSTORY
+
+Typography overrides for scrollstory pages only. Fonts are imported in
+base.css; the box model comes from the base.css `.container` grid.
+
+Read the bare `.container` rules below with that in mind: they look site-wide
+and are not. This file is loaded only when a page sets `layout: scrollstory`,
+which is what scopes them. Nothing here needs a wrapper class to "fix" that —
+the conditional load is the scope.
+
+Loads:    only on pages with `layout: scrollstory`
+Used by:  the scrollstory layout and the scrollybox/ includes
+Needs:    base.css tokens
+Not here: the background images themselves (backgrounds.css)
+*****************************************************/
+
+.container {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 1.4em;
+}
+
+.container p {
+  /* Typography */
+  line-height: 1.6em;
+}
+
+/* Text boxes within background images */
+.bg-text-box {
+  /* Typography */
+  font-family: var(--font-serif);
+}
+
+/* Opening paragraph.
+
+   A scrollstory's title lives in the page header above, so the essay body
+   starts straight into prose — and that first paragraph is doing a lede's
+   work whether or not anyone marked it up as one. It was arriving at body
+   size, flush against the bottom of the hero image with no gap at all.
+
+   Matched on :first-child rather than :first-of-type deliberately: it should
+   be the lede only when it is the very first thing in the essay. A page that
+   opens with a heading, as milton-snow does, has no lede to enlarge. The
+   consequence to know about is that putting anything above it — a scrollspy
+   table of contents, say — takes the styling away.
+
+   Scoped to #main > .container, not .container alone: a scrollstory page has
+   six to thirteen .container elements — every scrollybox opens one, and so
+   does the footer — and the looser selector was enlarging the footer's first
+   line on every scrollstory on the site. The essay's own container is the one
+   the layout puts directly inside <main>.
+
+   👉 To turn this off for one page, give its first paragraph a class and
+      override, or start the page with a heading instead. */
+#main > .container > p:first-child {
+  /* Box Model */
+  margin-top: clamp(2.5rem, 7vh, 5rem);
+  margin-bottom: var(--spacing-lg);
+
+  /* Typography — the same measure as .lede in typography.css, so a scrollstory
+     opens at the same size as every other page on the site. */
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
+  line-height: 1.5;
+  color: var(--text-lede);
+}
+
+.container h1,
+.container h2,
+.container h3,
+.container h4,
+.container h5 {
+  /* Typography */
+  font-family: var(--font-body);
+  font-weight: normal;
+  letter-spacing: normal;
+}
+
+
+/* Responsive adjustments */

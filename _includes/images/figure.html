@@ -1,0 +1,33 @@
+{% comment %}
+  Standalone Image — a single centered image with caption
+  Parameters:
+    - image-path:  path to image (required)
+    - image-width: CSS width of the image (default: 40%)
+    - caption:     caption below the image (optional; markdown supported)
+    - alt-text:    accessibility description (optional; falls back to caption)
+  For an image beside text, use images/figure-wrap.html instead.
+{% endcomment %}
+
+{% capture img_url %}
+{% include helpers/image-path.html image-path=include.image-path %}
+{% endcapture %}
+
+{% assign img_url = img_url | strip %}
+
+{% if img_url %}
+  <figure class="center" style="width: {{ include.image-width | default: '40%' }}">
+
+    <a class="image" href="{{ img_url }}"><img src="{{ img_url }}" alt="{{ include.alt-text | default: include.caption | default: '' }}" width="100%"></a>
+
+    {% if include.caption %}
+      <figcaption>
+        {{ include.caption | markdownify }}
+      </figcaption>
+    {% endif %}
+
+  </figure>
+{% else %}
+  <div class="xanthan-warning">
+    image-path missing &mdash; check the image-path parameter in this figure include
+  </div>
+{% endif %}

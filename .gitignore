@@ -1,0 +1,10 @@
+_site/
+.jekyll-cache/
+.jekyll-metadata
+.sass-cache/
+.bundle/
+vendor/
+.migration/
+.DS_Store
+_config.local.yml
+_config.ci.yml

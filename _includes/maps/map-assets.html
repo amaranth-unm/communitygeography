@@ -1,0 +1,30 @@
+{% comment %}
+  Map Assets — internal helper, not for use in page content
+
+  Loads Leaflet and the story-map script. Both maps/story-map.html and
+  maps/figure-map.html start by including this.
+
+  story-map.css is not here — it is linked unconditionally from
+  html/html-head.html with the rest of the stylesheets, which is the rule for
+  every component's styles. Leaflet and the engine stay here instead because
+  they are a library and only map pages need them, the same arrangement
+  nav/map.html uses.
+
+  The guards matter: a page may hold more than one map, and a repeated
+  <script src> runs a second time rather than being ignored. Liquid shares one
+  scope between a page and its includes, so a flag set here is still set the
+  next time this file is reached on the same page. Leaflet sits behind its own
+  flag because nav/map.html loads the same library, and a page can carry a
+  story map and a collection map at once.
+{% endcomment %}
+
+{% unless xanthan_leaflet_loaded %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  {% assign xanthan_leaflet_loaded = true %}
+{% endunless %}
+
+{% unless xanthan_map_assets %}
+  <script src="{{ site.baseurl }}/assets/js/story-map.js" defer></script>
+  {% assign xanthan_map_assets = true %}
+{% endunless %}

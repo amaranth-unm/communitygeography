@@ -1,0 +1,36 @@
+title: Center for Community Geography
+name: R.H. Mallory Center for Community Geography
+description: Connecting University of New Mexico resources with community needs through service learning, collaborative mapping, place-based research, and public events.
+lang: en
+url: https://amaranth-unm.github.io
+baseurl: /communitygeography
+repository: amaranth-unm/communitygeography
+repository_url: https://github.com/amaranth-unm/communitygeography
+email: communitygeography@unm.edu
+theme_css: unm
+search: true
+analytics_id:
+# Preserve the university tag used on the source site; the extension has no default ID.
+unm_gtm_id: GTM-WQT2MB
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+plugins:
+  - jekyll-sitemap
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: base-unm
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+  - scripts/
+  - migration/
+  - unm-branding/
+  - .migration/
+  - .bundle/

@@ -1,0 +1,50 @@
+{% comment %}
+  Split Intro — a large statement on the left, the explanation on the right.
+
+  For the opening argument of a landing page, where a single sentence carries
+  the claim and a paragraph or two does the qualifying. The two-column split
+  keeps the claim large without making the reader work through a wall of type.
+
+  Parameters:
+    - intro: an object from front matter (required). Keys:
+        kicker: small caps label above the heading (optional)
+        title:  the claim, set large (required)
+        text:   a string, or an array of paragraphs. Markdown works.
+
+  Front matter:
+    opening_argument:
+      kicker: Opening Argument
+      title: The Silk Road was not a single road, and it was not only about silk.
+      text:
+        - The name evokes caravans crossing the known world.
+        - The history is stranger, and this site follows those threads.
+
+  Page body:
+    {% raw %}{% include layout/split-intro.html intro=page.opening_argument %}{% endraw %}
+{% endcomment %}
+
+{% assign intro = include.intro %}
+
+{::nomarkdown}
+{% if intro and intro.title %}
+  <section class="home-split">
+    <div class="home-split-inner">
+      {% if intro.kicker %}<p class="home-section-label">{{ intro.kicker }}</p>{% endif %}
+      <div class="home-split-grid">
+        <h2>{{ intro.title }}</h2>
+        <div class="home-split-body">
+          {% if intro.text.first %}
+            {% for paragraph in intro.text %}{{ paragraph | markdownify }}{% endfor %}
+          {% else %}
+            {{ intro.text | markdownify }}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    split-intro include needs an intro object with a title.
+  </div>
+{% endif %}
+{:/nomarkdown}

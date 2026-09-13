@@ -1,0 +1,220 @@
+{% comment %}
+  Collection Map — an OpenStreetMap of the site's own pages
+
+  Draws a marker for every page whose front matter carries `geo: [lat, lng]`
+  and builds each popup out of that page's own fields, so a page joins the map
+  by gaining coordinates and leaves it by losing them. Nothing is listed twice.
+
+  This is not the historic-map component. A scanned map laid over real
+  coordinates, with routes drawn on it, is `maps/figure-map.html`.
+
+  Example:
+
+    {% raw %}{% include nav/map.html
+         folder="objects"
+         fields="object-date,medium,collection"
+         class="map-wrap--wide"
+         height="70vh" %}{% endraw %}
+
+  What goes on the map:
+    - folder:      map only the pages under this folder, e.g. "objects"
+                   (optional; the default is every page on the site with geo)
+    - fields:      comma-separated front matter fields printed in the popup
+                   beneath the place name, e.g. "object-date,medium,collection".
+                   A page missing one of them prints the rest.
+    - image-field: front matter field holding the popup image
+                   (optional; default thumbnail, falling back to header-image)
+
+  How it looks:
+    - id:           unique id, needed only if one page holds two maps (default: map)
+    - height:       CSS height (default: 700px)
+    - width:        CSS width (default: 100%)
+    - class:        extra classes on the map's wrapper. Pass
+                    class="map-wrap--wide" to break out of the text column.
+    - start-coords: "[lat, lng]" opening centre (optional; by default the map
+                    opens on the view that fits every marker)
+    - zoom:         opening zoom level, 1–18. With start-coords it is the
+                    opening zoom; without it, the closest the automatic fit
+                    may go (default: 8).
+
+  Each page contributes title and geo, and may add placename, summary,
+  thumbnail or header-image, alt-text, and anything named in fields.
+
+  start_coords, with an underscore, is still read for pages written before the
+  parameter was renamed to match the framework's hyphenated convention.
+{% endcomment %}
+
+{% assign map_id = include.id | default: "map" %}
+{% assign map_height = include.height | default: "700px" %}
+{% assign map_width = include.width | default: "100%" %}
+{% assign map_class = include.class | default: "" %}
+{% assign map_coords = include.start-coords | default: include.start_coords %}
+{% assign image_field = include.image-field | default: "thumbnail" %}
+{% assign meta_fields = include.fields | default: "" | split: "," %}
+
+{% comment %}
+  The folder filter compares URL prefixes rather than asking whether the path
+  *contains* the folder name: "objects" should not also collect
+  "reused-objects/", and a page's own url is what the marker links to anyway.
+{% endcomment %}
+{% assign folder_prefix = "" %}
+{% if include.folder %}
+  {% capture folder_prefix %}/{{ include.folder | remove_first: "/" }}/{% endcapture %}
+  {% assign folder_prefix = folder_prefix | replace: "//", "/" %}
+{% endif %}
+{% assign prefix_size = folder_prefix | size %}
+
+{% assign marker_count = 0 %}
+{% capture map_markers %}
+{%- for p in site.pages -%}
+  {%- unless p.geo %}{% continue %}{% endunless -%}
+  {%- if prefix_size > 0 -%}
+    {%- assign page_prefix = p.url | slice: 0, prefix_size -%}
+    {%- unless page_prefix == folder_prefix %}{% continue %}{% endunless -%}
+  {%- endif -%}
+
+  {%- assign p_image = p[image_field] | default: p.thumbnail | default: p["header-image"] -%}
+  {%- capture p_image_url %}{% if p_image %}{% include helpers/image-path.html image-path=p_image page-dir=p.dir %}{% endif %}{% endcapture -%}
+  {%- capture p_url %}{% include helpers/link-path.html link=p.url %}{% endcapture -%}
+
+  {%- if marker_count > 0 %},{% endif -%}
+  {
+    "title": {{ p.title | default: "" | jsonify }},
+    "url": {{ p_url | strip | jsonify }},
+    "image": {{ p_image_url | strip | jsonify }},
+    "alt": {{ p["alt-text"] | default: p.title | default: "" | jsonify }},
+    "placename": {{ p.placename | default: "" | jsonify }},
+    "summary": {{ p.summary | default: "" | jsonify }},
+    "meta": [{% assign meta_first = true %}{% for field in meta_fields %}{% assign field_name = field | strip %}{% assign field_value = p[field_name] %}{% if field_value and field_value != "" %}{% unless meta_first %},{% endunless %}{{ field_value | jsonify }}{% assign meta_first = false %}{% endif %}{% endfor %}],
+    "geo": {{ p.geo | jsonify }}
+  }
+  {%- assign marker_count = marker_count | plus: 1 -%}
+{%- endfor -%}
+{% endcapture %}
+
+{% if marker_count == 0 %}
+
+  <div class="xanthan-warning">
+    Map: nothing to draw{% if include.folder %} under <code>{{ include.folder }}</code>{% endif %}.
+    A page joins the map by carrying <code>geo: [lat, lng]</code> in its front matter.
+  </div>
+
+{% else %}
+
+{% comment %}
+  Leaflet itself. It is a library only map pages need, so it loads here rather
+  than in the head — but a page may hold two maps, and a repeated <script src>
+  runs a second time rather than being ignored. Liquid shares one scope between
+  a page and its includes, so the flag set here is still set the next time this
+  file, or maps/map-assets.html, is reached on the same page.
+{% endcomment %}
+{% unless xanthan_leaflet_loaded %}
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  {% assign xanthan_leaflet_loaded = true %}
+{% endunless %}
+
+<div class="map-wrap {{ map_class }}" style="--map-height: {{ map_height }}; --map-width: {{ map_width }};">
+  <div class="collection-map" id="{{ map_id }}"></div>
+</div>
+
+<script id="{{ map_id }}-data" type="application/json">
+[{{ map_markers }}]
+</script>
+
+<script>
+(function () {
+  if (typeof L === 'undefined') {
+    console.warn('Collection map: Leaflet did not load, so #{{ map_id }} stays empty.');
+    return;
+  }
+
+  // Front matter is the site's own text, but it still lands in markup here, so
+  // it is escaped rather than trusted to be free of angle brackets and quotes.
+  var ENTITIES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+  function esc(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) { return ENTITIES[c]; });
+  }
+
+  function popupHtml(p) {
+    var image = p.image
+      ? '<img src="' + esc(p.image) + '" alt="' + esc(p.alt) + '">'
+      : '';
+    var placename = p.placename
+      ? '<p class="popup-placename">' + esc(p.placename) + '</p>'
+      : '';
+    var meta = (p.meta && p.meta.length)
+      ? '<p class="popup-meta">' + p.meta.map(esc).join(' · ') + '</p>'
+      : '';
+    var summary = p.summary
+      ? '<p class="popup-summary">' + esc(p.summary) + '</p>'
+      : '';
+
+    return '<div class="popup-wrapper">' + image +
+      '<div class="popup-text">' +
+        '<div class="popup-title"><a href="' + esc(p.url) + '">' + esc(p.title) + '</a></div>' +
+        placename + meta + summary +
+      '</div></div>';
+  }
+
+  function initMap() {
+    var dataElement = document.getElementById('{{ map_id }}-data');
+    var mapElement = document.getElementById('{{ map_id }}');
+    if (!dataElement || !mapElement) {
+      console.warn('Collection map: #{{ map_id }} is missing its container or its data.');
+      return;
+    }
+
+    var pages = JSON.parse(dataElement.textContent);
+    var map = L.map('{{ map_id }}');
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    var points = [];
+
+    pages.forEach(function (p) {
+      // Liquid cannot tell 38.1026 from a typo, so the coordinates arrive
+      // unchecked and are read here, where a bad pair can be reported.
+      var lat = p.geo && p.geo.length === 2 ? Number(p.geo[0]) : NaN;
+      var lng = p.geo && p.geo.length === 2 ? Number(p.geo[1]) : NaN;
+      if (isNaN(lat) || isNaN(lng)) {
+        console.warn('Collection map: "' + p.title + '" has geo that is not [lat, lng], so it is not on the map.');
+        return;
+      }
+
+      L.marker([lat, lng])
+        .addTo(map)
+        .bindPopup(L.popup({
+          maxWidth: 420,
+          autoPan: true,
+          autoPanPadding: [50, 50]
+        }).setContent(popupHtml(p)));
+
+      points.push([lat, lng]);
+    });
+
+    {% if map_coords %}
+    map.setView({{ map_coords }}, {{ include.zoom | default: 4 }});
+    {% else %}
+    // No opening view was given: show everything the map actually holds. The
+    // zoom cap stops a single marker filling the screen with one street.
+    if (points.length) {
+      map.fitBounds(points, { padding: [40, 40], maxZoom: {{ include.zoom | default: 8 }} });
+    } else {
+      map.setView([20, 0], 2);
+    }
+    {% endif %}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMap);
+  } else {
+    initMap();
+  }
+})();
+</script>
+
+{% endif %}

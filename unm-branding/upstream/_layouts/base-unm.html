@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+{% include unm/page-header-unm.html %}
+
+<body id="home">
+  <!-- Google Tag Manager -->
+<noscript>
+  <iframe src="//www.googletagmanager.com/ns.html?id=GTM-WQT2MB"
+          height="0" width="0" style="display:none;visibility:hidden">
+  </iframe>
+</noscript>
+
+<script>(function(w,d,s,l,i){
+    w[l]=w[l]||[];
+    w[l].push({
+      'gtm.start':
+      new Date().getTime(),event:'gtm.js'}
+             );
+    var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+    j.async=true;
+    j.src=
+      '//www.googletagmanager.com/gtm.js?id='+i+dl;
+    f.parentNode.insertBefore(j,f);
+  }
+        )(window,document,'script','dataLayer','GTM-WQT2MB');
+</script>
+<!-- End Google Tag Manager -->
+
+{% include unm/nav-unm.html %}
+
+{% assign headerimage = page.header-image %}
+{% assign headertitle = page.header-title %}
+{% assign headerheight = page.header-height %}
+{% assign backgroundposition = page.background-position %}
+
+{% if headerimage %}
+
+{% include header-image.html   
+  height = headerheight
+  header-image = headerimage
+  title = headertitle
+  background-position = backgroundposition
+  prev_url = prev_url
+  next_url = next_url
+%}
+
+{% endif %}
+
+
+{% include unm/nav-site.html %}
+
+<!--UPPER-->
+<div id="upper"> 
+  <div class="container">
+  </div>
+</div>
+
+<div id="breadcrumbs">
+  <div class="container">
+    {% include breadcrumbs.html %}
+  </div>
+</div>
+
+<div aria-label="main content" id="main" role="main">
+    <div class="main-content-container">
+      {{ content }}
+    </div>
+</div>
+
+<!--
+{% include unm/footer-site.html %}
+-->
+
+{% include unm/footer-unm.html %}
+
+{% include page-js.html %}
+
+</body>
+</html>

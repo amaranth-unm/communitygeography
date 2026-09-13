@@ -1,0 +1,34 @@
+{% comment %}
+  Alert Box — colored callout for tips, warnings, and notes
+
+  Parameters:
+    - text:  alert content (required; markdown supported)
+    - class: info | warning | danger | success (default: info)
+    - title: heading above the alert text (optional)
+    - heading-level: 2–6, the heading level for `title` (default: 3)
+
+  On heading-level: an alert does not know what section it sits in, and a
+  fixed level creates gaps in the document outline — a callout under an h2
+  emitting an h4 skips h3. The default of 3 is right under the h2 sections
+  most pages use; pass the level explicitly when nesting deeper.
+
+  role="alert" is deliberately not used: it interrupts screen readers to
+  announce live changes, which is wrong for static page content. These are
+  notes, so they are marked as such.
+{% endcomment %}
+
+{% assign alert_class = include.class | default: 'info' %}
+{% assign heading_level = include.heading-level | default: 3 %}
+
+{% if include.text %}
+<aside class="alert alert-{{ alert_class }}" role="note">
+  {% if include.title %}
+    <h{{ heading_level }} class="alert-heading">{{ include.title }}</h{{ heading_level }}>
+  {% endif %}
+  {{ include.text | markdownify }}
+</aside>
+{% else %}
+  <div class="xanthan-warning">
+    alert include needs a text parameter.
+  </div>
+{% endif %}

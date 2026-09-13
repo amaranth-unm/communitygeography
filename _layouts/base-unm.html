@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang }}">
+  {% include unm/page-header-unm.html %}
+  <body class="unm-site">
+    {% include nav/skip-link.html %}
+    {% include unm/analytics.html %}
+    <div class="page-wrap">
+      {% include unm/nav-unm.html overlap=true %}
+      <header class="center-masthead">
+        <a href="{{ '/' | relative_url }}" aria-label="{{ site.name }} home">
+          <img src="{{ '/assets/img/center-logo-.png' | relative_url }}" width="1920" height="300" alt="R.H. Mallory Center for Community Geography, University of New Mexico">
+        </a>
+      </header>
+      <div class="unm-site-nav">{% include nav/nav-top.html %}</div>
+      <main id="main">
+        {% unless page.home %}
+        <nav class="center-breadcrumbs" aria-label="Breadcrumb">
+          <a href="{{ '/' | relative_url }}">Home</a>
+          {% if page.section_url %}<span aria-hidden="true">/</span><a href="{{ page.section_url | relative_url }}">{{ page.section }}</a>{% endif %}
+          <span aria-hidden="true">/</span><span aria-current="page">{{ page.title }}</span>
+        </nav>
+        {% endunless %}
+        <div class="container center-content{% if page.home %} center-content--home{% endif %}">
+          <div class="center-article">{{ content }}</div>
+        </div>
+      </main>
+      {% include unm/footer-site.html %}
+      {% include unm/footer-unm.html %}
+      {% include nav/search.html %}
+    </div>
+    {% include google_analytics.html %}
+    {% include html/html-js.html %}
+    <script src="{{ '/assets/js/unm.js' | relative_url }}" defer></script>
+  </body>
+</html>

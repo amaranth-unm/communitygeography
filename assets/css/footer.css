@@ -1,0 +1,119 @@
+/*****************************************************
+FOOTER
+
+The site footer: the column block and the bottom bar under it.
+
+Loads:    every page
+Used by:  layout/footer.html
+Needs:    base.css tokens (--bg-footer, --bg-footer-bottom, --text-footer-*)
+Not here: the footer's navigation data, which is nav/nav-footer.html
+*****************************************************/
+
+@media screen {
+
+footer {
+  /* Display & Positioning */
+  margin-top: auto;
+
+  /* Typography */
+  color: var(--text-on-dark);
+
+  /* Visual */
+  background-color: var(--bg-footer);
+  border-top: 2px solid var(--accent-border);
+  padding: 0;
+}
+
+.footer-columns {
+  /* Layout */
+  max-width: 55rem;
+  margin: 0 auto;
+  padding: var(--spacing-lg) var(--spacing-md);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--spacing-md);
+  justify-items: center;
+}
+
+/* Hide footer navigation columns on small screens */
+@media (max-width: 768px) {
+  .footer-columns {
+    display: none;
+  }
+}
+
+.footer-column h3 {
+  margin: 0 0 0.35rem 0;
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--interactive-hover);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.footer-column ul li a {
+  color: var(--text-footer-link);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color var(--transition-fast);
+}
+
+.footer-column ul li a:hover {
+  color: var(--interactive-hover);
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-on-dark);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: center;
+  background-color: var(--bg-footer-bottom);
+}
+
+.footer-bottom .container {
+  text-align: center;
+}
+
+.footer-bottom p {
+  font-size: 0.8rem;
+  color: var(--text-footer-bottom);
+  margin: 0.25rem 0;
+  text-align: center;
+}
+
+.footer-bottom a {
+  color: var(--text-footer-link);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-bottom a:hover {
+  color: var(--interactive-hover);
+  text-decoration: underline;
+}
+
+.footer-tagline {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6); /* subdued — intentionally lighter than --text-footer-bottom */
+}
+
+/* Responsive footer */
+@media (max-width: 768px) {
+  footer {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+} /* end media screen */

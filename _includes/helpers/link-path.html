@@ -1,0 +1,30 @@
+{% comment %}
+  Link Path — internal helper for resolving link URLs
+
+  Parameters:
+    - link: internal path, external URL, anchor, mailto, or tel link (required)
+
+  Public navigation and card includes use this helper so links behave consistently
+  across local development, GitHub Pages, and sites with a baseurl.
+
+  A baseurl is natural to write either way in _config.yml — "/my-site" or
+  "/my-site/" — and the trailing-slash form used to produce doubled separators
+  in every link on the site. Each branch below adds a separator only when the
+  link does not already carry one, so exactly one doubled slash can appear at
+  the join, and collapsing it is enough. External URLs and anchors return
+  before that, which keeps https:// intact.
+{% endcomment %}
+
+{% assign raw_link = include.link | strip %}
+{% if raw_link != '' %}
+  {% assign first_char = raw_link | slice: 0, 1 %}
+  {% if raw_link contains '://' or raw_link contains 'mailto:' or raw_link contains 'tel:' or first_char == '#' %}
+    {{ raw_link }}
+  {% elsif first_char == '/' %}
+    {% capture joined_link %}{{ site.baseurl }}{{ raw_link }}{% endcapture %}
+    {{ joined_link | replace: '//', '/' }}
+  {% else %}
+    {% capture joined_link %}{{ site.baseurl }}/{{ raw_link }}{% endcapture %}
+    {{ joined_link | replace: '//', '/' }}
+  {% endif %}
+{% endif %}

@@ -1,0 +1,54 @@
+{% comment %}
+  Feature Block — one item given the whole width: big image, title, summary, link.
+
+  For the single thing you most want a visitor to read. Pick it by slug and the
+  component reads the title, summary, byline, and thumbnail off that page, so
+  the block stays current when the page is edited.
+
+  Parameters:
+    - collection: folder or collection the item lives in (required), e.g. "essays"
+    - slug:       the item's folder or file name (required), e.g. "chess"
+    - label:      small caps kicker above the title (default: "Featured")
+    - cta:        link text under the summary (default: "Read more")
+    - image:      override the item's own thumbnail (optional)
+    - flip:       true to put the image on the right (default: false)
+
+  Read from the target page's front matter: title, summary, thumbnail, author.
+
+  Page body:
+    {% raw %}{% include layout/feature-block.html
+        collection="essays" slug="chess"
+        label="Featured Essay" cta="Follow the game" %}{% endraw %}
+{% endcomment %}
+
+{% include helpers/find-item.html collection=include.collection slug=include.slug %}
+{% assign label = include.label | default: "Featured" %}
+{% assign cta = include.cta | default: "Read more" %}
+{% assign block_image = include.image | default: xanthan_item.thumbnail %}
+
+{::nomarkdown}
+{% if xanthan_item %}
+  {% capture block_url %}{% include helpers/link-path.html link=xanthan_item.url %}{% endcapture %}
+  <section class="feature-block{% if include.flip %} feature-block--flip{% endif %}">
+    {% if block_image %}
+      {% capture block_image_url %}{% include helpers/image-path.html image-path=block_image page-dir=xanthan_item.dir %}{% endcapture %}
+      <a class="feature-block-image" href="{{ block_url | strip }}" tabindex="-1" aria-hidden="true">
+        <img src="{{ block_image_url | strip }}" alt="">
+      </a>
+    {% endif %}
+    <div class="feature-block-text">
+      <p class="home-section-label">{{ label }}</p>
+      <h2><a href="{{ block_url | strip }}">{{ xanthan_item.title }}</a></h2>
+      {% if xanthan_item.summary %}<p>{{ xanthan_item.summary }}</p>{% endif %}
+      {% if xanthan_item.author %}<p class="feature-block-byline">By {{ xanthan_item.author }}</p>{% endif %}
+      <a class="feature-block-cta" href="{{ block_url | strip }}">{{ cta }}</a>
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    feature-block could not find "{{ include.slug }}" in "{{ include.collection }}".
+    Looked for {{ include.collection }}/{{ include.slug }}/index.md and
+    {{ include.collection }}/{{ include.slug }}.md.
+  </div>
+{% endif %}
+{:/nomarkdown}

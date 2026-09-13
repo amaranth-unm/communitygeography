@@ -1,0 +1,44 @@
+{% comment %}
+  Feature Grid — a set of short titled points laid out side by side
+
+  For the "here's what this gives you" points that otherwise pile up as a long
+  vertical stack of headings and paragraphs. Reads as a grid on wide screens
+  and collapses to a single column on phones.
+
+  Parameters:
+    - features:  array of objects, each with `title` and `text` (required).
+                 Usually written in page front matter and passed as page.<name>.
+                 `text` accepts Markdown, so links and emphasis work.
+    - columns:   2 or 3 — columns on wide screens (default: 2)
+
+  Front matter:
+    principles:
+      - title: "Open"
+        text: "Your site is made of files you control and can move elsewhere."
+      - title: "Transparent"
+        text: "The structure is visible: content, navigation, and design."
+
+  Page body:
+    {% raw %}{% include layout/feature-grid.html features=page.principles %}{% endraw %}
+{% endcomment %}
+
+{% assign columns = include.columns | default: 2 %}
+
+{::nomarkdown}
+{% if include.features and include.features.size > 0 %}
+  <div class="feature-grid feature-grid--{{ columns }}">
+    {% for feature in include.features %}
+      {% if feature.title and feature.title != "" %}
+        <div class="feature-grid-item">
+          <h3>{{ feature.title }}</h3>
+          {{ feature.text | markdownify }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="xanthan-warning">
+    feature-grid include needs a features array of title/text pairs.
+  </div>
+{% endif %}
+{:/nomarkdown}

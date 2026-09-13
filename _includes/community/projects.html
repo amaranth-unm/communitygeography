@@ -1,0 +1,15 @@
+{% comment %}
+Project directory adapted from source project cards and Xanthan's card layout.
+Parameters: collection (string, required) — YAML filename in _data.
+{% endcomment %}
+<div class="community-projects">
+  {% for project in site.data[include.collection] %}
+  <article class="community-project">
+    <a href="{{ project.url | relative_url }}"><img src="{{ project.image | relative_url }}" alt="{{ project.alt | escape }}" loading="lazy"></a>
+    <div class="community-project-body">
+      <h2><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h2>
+      {% for date in project.dates %}<p>{{ date }}</p>{% endfor %}
+    </div>
+  </article>
+  {% endfor %}
+</div>

@@ -1,0 +1,114 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+  <title>{% if page.title %}{{ page.title | escape }} // {{ site.title | escape }}{% else %}{{ site.title | escape }} // {{ site.tagline | escape }}{% endif %}</title>
+
+  <meta name="description" content="{{ page.summary | default: site.description | escape }}">
+  <meta name="author" content="">
+  <link rel="icon" href="{{site.baseurl}}/favicon.ico">
+  {%- comment -%}
+    site.url is the host only; the project path lives in site.baseurl. Omitting
+    it produced canonicals like https://user.github.io/docs/ for a page that
+    actually sits at https://user.github.io/repo/docs/ — pointing search
+    engines and social cards at a 404. GitHub Pages fills both in
+    automatically, so a site owner does not have to set either.
+  {%- endcomment -%}
+  <link rel="canonical" href="{{ site.url }}{{ site.baseurl }}{{ page.url }}">
+
+  <!-- Open Graph for social sharing -->
+  <meta property="og:title" content="{{ page.title | default: site.title | escape }}">
+  <meta property="og:description" content="{{ page.summary | default: site.description | escape }}">
+  <meta property="og:url" content="{{ site.url }}{{ site.baseurl }}{{ page.url }}">
+  {% if page.thumbnail or page.header-image %}
+  <meta property="og:image" content="{{ site.url }}{{ site.baseurl }}{{ page.dir }}{{ page.thumbnail | default: page.header-image }}">
+  {% endif %}
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- juxtapose.js CSS for image comparison -->
+  <link rel="stylesheet" href="https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css">
+
+  <!-- littlefoot.js CSS for snappy footnotes -->
+  <link rel="stylesheet" href="https://unpkg.com/littlefoot/dist/littlefoot.css" />
+
+  <!-- Splide CSS for image carousels -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/css/splide.min.css">
+
+  <!-- Base CSS -->
+  <!-- Load order matters: base.css defines the tokens and the container grid
+       everything else builds on, so it comes first. The rest follow the order
+       they were written in, which is what keeps same-specificity rules
+       resolving the way they always have. -->
+  <link href="{{site.baseurl}}/assets/css/base.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/feature-grid.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/jumbotron.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/images.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/footer.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/buttons.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/cards.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/tags.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/gallery.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/toc.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/home.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/backgrounds.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/story-map.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/map.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/typography.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/nav.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/nav-left.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/nav-profile.css" rel="stylesheet">
+  <link href="{{site.baseurl}}/assets/css/workshop.css" rel="stylesheet">
+
+  <!--
+    Theme CSS loads after the base files above.
+    Set theme_css: canyon-wall in _config.yml to load
+    assets/css/themes/canyon-wall.css.
+
+    You can also uncomment one of these links for quick testing.
+  -->
+
+  {% if site.theme_css %}
+  <link href="{{site.baseurl}}/assets/css/themes/{{ site.theme_css }}.css" rel="stylesheet">
+  {% endif %}
+
+  <!-- <link href="{{site.baseurl}}/assets/css/themes/canyon-wall.css" rel="stylesheet"> -->
+  <!-- <link href="{{site.baseurl}}/assets/css/themes/dark-energy.css" rel="stylesheet"> -->
+  <!-- <link href="{{site.baseurl}}/assets/css/themes/terra-cotta.css" rel="stylesheet"> -->
+
+  <!-- scrollstory layout CSS 
+    To differentiate scrollstory pages from regular pages, we use a special layout value in the YAML front matter
+    and load the scrollstory.css file.
+  -->
+
+  {% if page.layout == 'scrollstory' %}
+  <link href="{{site.baseurl}}/assets/css/scrollstory.css" rel="stylesheet">
+  {% endif %}
+
+  <!-- docs CSS - consistent table column widths for /docs/ pages -->
+  {% if page.url contains '/docs/' %}
+  <link href="{{site.baseurl}}/assets/css/docs.css" rel="stylesheet">
+  {% endif %}
+
+  <!-- Page header CSS: loaded when page has a header image -->
+  {% if page.header-image %}
+  <link href="{{site.baseurl}}/assets/css/page-header.css" rel="stylesheet">
+  {% endif %}
+
+  <!-- Search CSS (loaded when search is enabled in _config.yml) -->
+  {% if site.search %}
+  <link href="{{site.baseurl}}/assets/css/search.css" rel="stylesheet">
+  {% endif %}
+
+  <!-- page specific CSS -->
+  <!-- individual pages can specify a css file in the YAML header with
+    css: my_styles.css
+  -->
+  {% if page.css %}
+  <link href="{{site.baseurl}}/assets/css/{{page.css}}" rel="stylesheet">
+  {% endif %}
+  
+  <link rel="stylesheet" href="{{ '/assets/css/community.css' | relative_url }}">
+</head>

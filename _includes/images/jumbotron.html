@@ -1,0 +1,109 @@
+{% comment %}
+  Jumbotron Component — full-width image with optional text
+  Parameters:
+    - image-path:          path to image (required)
+    - height:              CSS height (e.g. "50vh"; optional)
+    - background-position: CSS background-position (default: "center")
+    - zoom:                CSS background-size (default: "cover")
+    - box-align:           left | right | center — text position + gradient direction (default: "left")
+    - fade-start:          where gradient starts (default: "0%")
+    - fade-end:            where gradient becomes transparent (default: "60%")
+    - overlay:             panel | image (default: panel)
+                           panel — the text sits on a band of solid colour that
+                             fades sideways to reveal the photograph
+                           image — the photograph runs the full width and the
+                             text sits on it, over a sheer dark scrim
+    - bg-color:            colour the gradient fades from
+                           (default: var(--bg-page) in panel mode,
+                            var(--bg-scrim-sheer) in image mode)
+    - text-color:          colour for the title and body text. Set this whenever
+                           you change bg-color to something dark, or the text
+                           will stay dark too.
+                           (default: var(--text-body) in panel mode,
+                            var(--text-on-photo) in image mode)
+    - title:               heading text (optional)
+    - text:                body text; markdown supported (optional)
+    - caption:             caption below image; markdown supported (optional)
+    - text-shadow:         set to false to disable the text shadow (default: true).
+                           Turn off when the text sits on a solid/opaque area
+                           rather than directly over busy image detail.
+{% endcomment %}
+
+{% capture img_url %}{% include helpers/image-path.html image-path=include.image-path %}{% endcapture %}
+{% assign img_url = img_url | strip %}
+
+{% assign box_align = include.box-align | default: 'left' %}
+{%- comment -%}
+  fade-start is where the solid colour ends and the fade begins. At 0% there is
+  no solid region at all — the colour starts dissolving from the very edge, so
+  the text sits on a wash of half-image rather than on a panel. 35% gives the
+  words something to sit on while leaving most of the photograph visible.
+{%- endcomment -%}
+{% assign fade_start = include.fade-start | default: '35%' %}
+{%- comment -%}
+  The text column can be up to 42rem wide and sits inset from its edge, so on a
+  wide screen it reaches past the halfway mark. A fade ending at 60% left the
+  far half of the words on bare photograph — every hand-tuned jumbotron in the
+  docs had already been raised to 80% or beyond to compensate. 85% is what the
+  default should have been.
+{%- endcomment -%}
+{% assign fade_end = include.fade-end | default: '85%' %}
+{% assign overlay = include.overlay | default: 'panel' %}
+{% if overlay == 'image' or box_align == 'center' %}
+  {% assign bg_color = include.bg-color | default: 'var(--bg-scrim-sheer)' %}
+  {% assign text_color = include.text-color | default: 'var(--text-on-photo)' %}
+{% else %}
+  {% assign bg_color = include.bg-color | default: 'var(--bg-page)' %}
+  {%- comment -%}
+    Panel mode with no text-color set leaves the custom property unset, so the
+    stylesheet's own defaults apply and the heading keeps its accent colour.
+    Setting it here would flatten every existing jumbotron's h2 to body colour.
+  {%- endcomment -%}
+  {% assign text_color = include.text-color %}
+{% endif %}
+{% assign has_content = include.text | default: include.title %}
+{% if box_align == 'right' %}
+  {% assign gradient_dir = 'to left' %}
+{% else %}
+  {% assign gradient_dir = 'to right' %}
+{% endif %}
+
+{% if img_url %}
+  <div class="jumbotron jumbotron--{{ box_align }} jumbotron--{{ overlay }}{% unless include.text-shadow == false %} jumbotron--text-shadow{% endunless %}" style="
+        {% if text_color %}--jumbotron-text: {{ text_color }};{% endif %}
+        {% if include.height %}height: {{ include.height }};{% endif %}
+        background-size: {{ include.zoom | default: 'cover' }};
+        background-position: {{ include.background-position | default: 'center' }};
+        background-repeat: no-repeat;
+        {%- comment -%}
+          Centred text keeps no gradient: the fade is directional, so on a
+          centred box it would darken one side and leave the other bare.
+          Legibility there comes from the text shadow instead.
+        {%- endcomment -%}
+        {% if has_content and box_align != 'center' %}
+        background-image:
+          linear-gradient({{ gradient_dir }},
+            {{ bg_color }} {{ fade_start }},
+            transparent {{ fade_end }}),
+          url('{{ img_url }}');
+        {% else %}
+        background-image: url('{{ img_url }}');
+        {% endif %}">
+
+    {% if has_content %}
+      <div class="jumbotron-content">
+        {% if include.title %}<h2>{{ include.title }}</h2>{% endif %}
+        {% if include.text %}
+          <div class="jumbotron-text">{{ include.text | markdownify }}</div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+  </div>
+
+  {% if include.caption %}<figcaption>{{ include.caption | markdownify }}</figcaption>{% endif %}
+{% else %}
+  <div class="xanthan-warning">
+    jumbotron include needs an image-path parameter.
+  </div>
+{% endif %}

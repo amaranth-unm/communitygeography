@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{ page.lang | default: site.lang | default: " en" }}">
+
+{% include html/html-head.html %}
+
+<body>
+
+    {% include nav/skip-link.html %}
+
+  <div class="page-wrap">
+
+    {% include nav/nav-top.html %}
+
+    <main id="main">
+      {{ content }}
+    </main>
+
+    {% include layout/footer.html %}
+
+  {% include nav/search.html %}
+
+  </div> <!-- /page-wrap -->
+
+  {% include google_analytics.html %}
+
+  {% include html/html-js.html %}
+
+</body>
+
+</html>

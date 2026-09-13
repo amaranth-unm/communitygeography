@@ -1,0 +1,37 @@
+{% comment %}
+  Image Path — internal helper for resolving image URLs
+
+  Parameters:
+    - image-path: image path or external URL (required)
+    - page-dir: directory to resolve relative image paths against (optional, defaults to page.dir)
+
+  Public image includes use this helper so learners can write either site-root
+  paths like /assets/images/example.jpg or relative paths like images/example.jpg.
+
+  A baseurl is natural to write either way in _config.yml — "/my-site" or
+  "/my-site/" — and the trailing-slash form used to produce doubled separators
+  in every path on the site. Each internal branch joins parts that already
+  carry their own leading slash, so exactly one doubled slash can appear at the
+  join, and collapsing it is enough. External URLs return before that, which is
+  what keeps https:// intact.
+{% endcomment %}
+
+{% if include.image-path %}
+  {% assign first_char = include.image-path | strip | slice: 0, 1 %}
+  {% if include.image-path contains '://' %}
+    {%- comment -%}External URL — returned untouched{%- endcomment -%}
+    {{ include.image-path }}
+  {% elsif first_char == '/' %}
+    {%- comment -%}Absolute path from site root{%- endcomment -%}
+    {% capture joined_path %}{{ site.baseurl }}{{ include.image-path }}{% endcapture %}
+    {{ joined_path | replace: '//', '/' }}
+  {% else %}
+    {%- comment -%}Relative path - use page-dir if provided, otherwise use page.dir{%- endcomment -%}
+    {% if include.page-dir %}
+      {% capture joined_path %}{{ site.baseurl }}{{ include.page-dir }}{{ include.image-path }}{% endcapture %}
+    {% else %}
+      {% capture joined_path %}{{ site.baseurl }}{{ page.dir }}{{ include.image-path }}{% endcapture %}
+    {% endif %}
+    {{ joined_path | replace: '//', '/' }}
+  {% endif %}
+{% endif %}

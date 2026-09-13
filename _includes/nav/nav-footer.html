@@ -1,0 +1,53 @@
+{% comment %}
+  Footer link grid — four columns of site links.
+
+  NOT USED on the Xanthan site. Every column but "Connect" duplicated the top
+  nav, which made the site look larger and more complicated than it is; the
+  two things it uniquely offered (the About page and the repository) moved
+  into the top nav instead.
+
+  Kept for template sites with more pages than the nav can hold. Include it
+  in a layout above layout/footer.html, and edit the links below — they are
+  hard-coded, not driven by _data.
+{% endcomment %}
+
+<footer>
+<div class="footer-columns">
+
+  <div class="footer-column">
+    <h3>Get Started</h3>
+    <ul>
+      <li><a href="{{ site.baseurl }}/docs/getting-started/">Quick Start Guide</a></li>
+      <li><a href="{{ site.baseurl }}/#what-can-you-build">View Templates</a></li>
+    </ul>
+  </div>
+
+  <div class="footer-column">
+    <h3>About</h3>
+    <ul>
+      <li><a href="{{ site.baseurl }}/about">Philosophy</a></li>
+      <li><a href="{{ site.baseurl }}/faqs#why-is-xanthan-open-source">Why Open Source</a></li>
+      <li><a href="{{ site.baseurl }}/faqs">FAQs</a></li>
+    </ul>
+  </div>
+
+  <div class="footer-column">
+    <h3>Tinker</h3>
+    <ul>
+      <li><a href="{{ site.baseurl }}/docs/reference/">Reference</a></li>
+      <li><a href="{{ site.baseurl }}/docs/scrollstories/">ScrollStories</a></li>
+      <li><a href="{{ site.baseurl }}/docs/reference/troubleshooting">Troubleshooting</a></li>
+    </ul>
+  </div>
+
+  <div class="footer-column">
+    <h3>Connect</h3>
+    <ul>
+      <li><a href="https://github.com/xanthan-web/xanthan">GitHub Repository</a></li>
+      <li><a href="https://github.com/xanthan-web/xanthan/issues">Report Issue</a></li>
+      <li><a href="https://github.com/xanthan-web/xanthan/blob/main/CONTRIBUTING.md">Contribute</a></li>
+    </ul>
+  </div>
+
+</div>
+</footer>

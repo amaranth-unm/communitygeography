@@ -1,0 +1,92 @@
+{% comment %}
+  Background Switch — changes the background of an open bg-multi-long section
+
+  Drop one of these between passages of text. When the reader scrolls it past
+  the middle of the screen, the section's background image becomes this one.
+  Chain as many as the narrative needs.
+
+  Parameters:
+    - bg-id:      the id given to the bg-multi-long section this belongs to (required)
+    - switch-id:  a unique id for this switch (required)
+    - image-path: the image to switch to (required)
+
+  The marker itself is not visible; it only marks a position in the text.
+{% endcomment %}
+
+{% capture image-path %}
+{% include helpers/image-path.html image-path=include.image-path %}
+{% endcapture %}
+
+{% assign image-path = image-path | strip %}
+
+{%- comment -%}
+  height: 1px is load-bearing, not decoration. IntersectionObserver reports
+  nothing for a zero-area target, and this marker has no content, so without a
+  height it never intersects and the background never changes. One pixel in the
+  flow of the text is invisible and is enough to be observed.
+{%- endcomment -%}
+<div class="bg-switch" id="{{ include.switch-id }}"
+    data-bg-id="{{ include.bg-id }}"
+    aria-hidden="true"
+    style="height: 1px; background-image: url('{{image-path}}')">
+</div>
+
+<script>
+(function () {
+  // Every switch on the page emits this script, but only one observer per
+  // background is wanted. The first to run claims the group and watches all of
+  // its switches; the rest return. Waiting for DOMContentLoaded matters —
+  // inline script runs as the page parses, so the switches further down the
+  // page do not exist yet at that point.
+  var bgId = {{ include.bg-id | jsonify }};
+
+  function init() {
+    var background = document.getElementById(bgId + '-image');
+    if (!background) return;
+    if (background.dataset.switchObserver === 'on') return;   // already claimed
+    background.dataset.switchObserver = 'on';
+
+    var switches = Array.prototype.slice.call(
+      document.querySelectorAll('.bg-switch[data-bg-id="' + bgId + '"]')
+    );
+    if (!switches.length) return;
+
+    var original = background.style.backgroundImage;
+    var visible = [];
+
+    function apply() {
+      if (visible.length) {
+        // Topmost switch in document order wins, which is what the reader is
+        // arriving at as they scroll down.
+        visible.sort(function (a, b) { return switches.indexOf(a) - switches.indexOf(b); });
+        background.style.backgroundImage = visible[0].style.backgroundImage;
+      } else if (switches[0].getBoundingClientRect().top > window.innerHeight * 0.45) {
+        // Scrolled back above the first switch: put the opening image back.
+        // Scrolling past the last one deliberately leaves its image in place.
+        background.style.backgroundImage = original;
+      }
+    }
+
+    // rootMargin collapses the viewport to a band across the middle of the
+    // screen. A switch inside that band is the current one. Expressed as
+    // percentages, so it survives a resize or a phone being rotated without
+    // any of the recalculation the old scroll handler had to do by hand.
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var i = visible.indexOf(entry.target);
+        if (entry.isIntersecting && i === -1) visible.push(entry.target);
+        if (!entry.isIntersecting && i !== -1) visible.splice(i, 1);
+      });
+      apply();
+    }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+    switches.forEach(function (el) { observer.observe(el); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>

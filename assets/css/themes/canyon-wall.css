@@ -1,0 +1,118 @@
+/* === Canyon Wall Theme === */
+/*
+  A variable-only theme drawn from Grand Canyon strata:
+  rust-red stone, ponderosa green, pale granite, trail dust, and shadow gray.
+
+  Load this AFTER the base Xanthan CSS files in _includes/html/html-head.html.
+
+  Teaching purpose:
+  - Shows how to build a coherent palette from a visual reference
+  - Keeps the framework CSS intact
+  - Maps named colors to semantic roles from base.css
+  - Uses red as an accent, not as the whole identity
+*/
+
+/*****************************************************
+CSS VARIABLE OVERRIDES
+*****************************************************/
+:root {
+  /* ===== Canyon Wall Color Palette ===== */
+  --canyon-red: #9f4a35;          /* Weathered red wall */
+  --canyon-red-dark: #733326;     /* Deep stratum red */
+  --canyon-red-light: #aa543d;    /* Sunlit red rock for hover states */
+  --ponderosa-green: #2f4938;     /* Dark rim vegetation */
+  --rim-green-light: #8fa08a;     /* Pale green lichen and rim light */
+  --shadow-gray: #293038;         /* Canyon shadow and ink */
+  --granite-white: #f3efe5;       /* Pale stone / page surface */
+  --limestone: #ded0b5;           /* Light cliff face */
+  --trail-tan: #c7a77a;           /* Dust and dry grass, reserved for warnings */
+
+  /* ===== Override Base Theme Variables ===== */
+  /* Backgrounds */
+  --bg-page: var(--granite-white);
+  --bg-card: color-mix(in srgb, var(--granite-white) 96%, var(--limestone));
+  --bg-accent: color-mix(in srgb, var(--ponderosa-green) 7%, var(--bg-page));
+  --bg-code: color-mix(in srgb, var(--limestone) 70%, var(--bg-page));
+  --bg-code-block: color-mix(in srgb, var(--ponderosa-green) 88%, var(--shadow-gray));
+  --text-code-block: var(--granite-white);
+  --bg-nav: var(--shadow-gray);
+  --bg-footer: var(--shadow-gray);
+  --bg-footer-bottom: var(--shadow-gray);
+
+  /* Homepage sections */
+  --bg-section-alt: linear-gradient(180deg, color-mix(in srgb, var(--limestone) 72%, var(--granite-white)), color-mix(in srgb, var(--limestone) 52%, var(--granite-white)));
+  --bg-section-alt-flat: color-mix(in srgb, var(--limestone) 62%, var(--granite-white));
+  --border-section-alt: color-mix(in srgb, var(--canyon-red) 18%, var(--granite-white));
+  --text-section-alt-heading: var(--canyon-red-dark);
+  --text-section-cool-heading: var(--ponderosa-green);
+  --bg-section-cool: linear-gradient(180deg, color-mix(in srgb, var(--rim-green-light) 32%, var(--granite-white)), color-mix(in srgb, var(--rim-green-light) 18%, var(--granite-white)));
+  --border-section-cool: color-mix(in srgb, var(--ponderosa-green) 22%, var(--granite-white));
+  /* The one dark band on the page, and it is green rather than ink so it reads
+     as the dark end of the same strata as the pale rim-green elsewhere, rather
+     than a second unrelated interruption.
+     Granite on ponderosa is 8.6:1. The link had to lighten: rim-green straight
+     on ponderosa is only 3.6:1, where on the old shadow-gray it was 4.8:1. */
+  --bg-section-warm: var(--ponderosa-green);
+  --text-section-warm: var(--granite-white);
+  /* Tinted toward the rim green so the heading belongs to the band rather than
+     sitting on top of it. Body copy stays granite, which keeps the two apart.
+     6.5:1 on ponderosa. */
+  --text-section-warm-heading: color-mix(in srgb, var(--rim-green-light) 35%, var(--granite-white));
+  --text-section-warm-link: color-mix(in srgb, var(--rim-green-light) 60%, var(--granite-white));
+  --text-section-warm-link-hover: var(--granite-white);
+  --border-section-warm: var(--canyon-red);
+  --border-section-accent: var(--canyon-red);
+  --hero-tagline-color: color-mix(in srgb, var(--shadow-gray) 76%, var(--bg-page));
+
+  --bg-feature-card: var(--shadow-gray);
+  --text-feature-card: var(--granite-white);
+  --text-feature-card-muted: color-mix(in srgb, var(--granite-white) 76%, transparent);
+  --border-feature-card: color-mix(in srgb, var(--canyon-red) 70%, var(--shadow-gray));
+  --border-feature-card-hover: var(--rim-green-light);
+  --bg-feature-band: var(--shadow-gray);
+  --text-feature-band: var(--granite-white);
+  --text-feature-band-muted: color-mix(in srgb, var(--granite-white) 76%, transparent);
+  --text-feature-band-link: var(--rim-green-light);
+  --text-feature-band-link-hover: var(--granite-white);
+  --bg-editorial-note: color-mix(in srgb, var(--rim-green-light) 18%, var(--granite-white));
+  --border-editorial-note: var(--canyon-red);
+  --text-lede: color-mix(in srgb, var(--shadow-gray) 86%, var(--canyon-red));
+  --text-kicker: var(--canyon-red-dark);
+  --metadata-border: color-mix(in srgb, var(--canyon-red) 32%, transparent);
+
+  /* Text */
+  --text-body: var(--shadow-gray);
+  --text-on-dark: var(--granite-white);
+  --text-muted: color-mix(in srgb, var(--shadow-gray) 68%, var(--bg-page));
+  --text-footer-link: var(--granite-white);
+  --text-footer-bottom: color-mix(in srgb, var(--granite-white) 72%, transparent);
+
+  /* Accents & Interactive */
+  --accent-primary: var(--canyon-red);
+  --accent-border: var(--canyon-red);
+  --interactive-hover: var(--rim-green-light);
+  --interactive-hover-bg: var(--canyon-red-light);
+  --interactive-subtle: color-mix(in srgb, var(--ponderosa-green) 14%, transparent);
+  --interactive-subtle-hover: color-mix(in srgb, var(--rim-green-light) 22%, transparent);
+  --accent-primary-dark: var(--canyon-red-dark);
+
+  /* Heading hierarchy */
+  --text-h1: var(--shadow-gray);
+  --text-h2: var(--shadow-gray);
+  --text-h3: var(--shadow-gray);
+  --text-h4: var(--shadow-gray);
+  --text-h5: var(--shadow-gray);
+
+  /* Status colors tuned to the palette */
+  --success: var(--ponderosa-green);
+  --warning: var(--trail-tan);
+  --warning-bg: color-mix(in srgb, var(--trail-tan) 24%, var(--bg-page));
+  --error: var(--canyon-red-dark);
+  --info: color-mix(in srgb, var(--ponderosa-green) 70%, var(--granite-white));
+
+  /* Page headers */
+  --bg-page-header: var(--shadow-gray);
+  --page-header-subtitle: color-mix(in srgb, var(--granite-white) 74%, transparent);
+  --page-header-caption: color-mix(in srgb, var(--granite-white) 78%, transparent);
+  --page-header-caption-hover: var(--granite-white);
+}

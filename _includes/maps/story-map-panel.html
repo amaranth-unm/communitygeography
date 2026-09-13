@@ -1,0 +1,29 @@
+{% comment %}
+  Story Map Panel — a passage of text that rides over a story map and moves it
+
+  Opens a card that floats above the pinned map. When the reader scrolls it to
+  the middle of the screen, the map travels to this panel's coordinates.
+
+  ⚠️ Leaves a div open so the prose inside stays ordinary Markdown. Close it
+     with maps/story-map-panel-end.html.
+
+  Parameters:
+    - map-id:      the id of the story map this belongs to (required)
+    - center:      "lat, lng" the map should move to (optional)
+    - zoom:        zoom level to settle at (optional)
+    - highlight:   name of a GeoJSON feature to pick out; everything else dims (optional)
+    - overlay:     swap in a different scanned map by path (optional)
+    - opacity:     set the overlay's opacity, 0–1 (optional)
+    - panel-align: left | center | right (default: center)
+{% endcomment %}
+
+{% include maps/story-map-step.html
+   map-id=include.map-id
+   center=include.center
+   zoom=include.zoom
+   highlight=include.highlight
+   overlay=include.overlay
+   opacity=include.opacity %}
+
+{% assign panel_align = include.panel-align | default: 'center' %}
+<div class="story-map-panel{% if panel_align != 'center' %} story-map-panel--{{ panel_align }}{% endif %}" markdown="1">

@@ -1,0 +1,89 @@
+{% comment %}
+  Profile Intro — a photograph beside a name, a short bio, and a set of links.
+
+  The opening block of a personal or portfolio homepage. It says who you are
+  once, at full width, and then gets out of the way so the rest of the page can
+  use the whole column.
+
+  This is the successor to the profile sidebar (`layout: nav-profile`). The
+  sidebar puts the same material in a permanent left rail, which costs a column
+  on every page and, on a phone, stacks above the content anyway. Reach for the
+  sidebar when a reader genuinely needs your links present on every page; reach
+  for this when they need them once, on the way in.
+
+  Reads `_data/nav-profile.yml` by default, so a site already using the sidebar
+  can switch without touching its data.
+
+  Parameters:
+    - profile: an object to use instead of site.data.nav-profile (optional)
+    - shape:   rounded | circle — the photograph's frame (default: rounded)
+    - width:   content | wide — content lines the block up with the page's text
+               column (default); wide matches the other landing bands, for a
+               homepage built by stacking them
+    - level:   1 | 2 — heading level for the name (default: 1). Use 2 on a page
+               that already has an h1, such as one with a page-header.
+
+  Data (_data/nav-profile.yml):
+    image_url: /assets/images/profile/headshot.jpg
+    alt_text: A photograph of Your Name
+    name: Your Name
+    role: Associate Professor of History     # optional
+    description: One or two sentences. Markdown works.
+    links:
+      - title: GitHub
+        url: https://github.com/you
+        icon: fab fa-github
+
+  Page body:
+    {% raw %}{% include layout/profile-intro.html %}{% endraw %}
+    {% raw %}{% include layout/profile-intro.html shape="circle" %}{% endraw %}
+    {% raw %}{% include layout/profile-intro.html width="wide" %}{% endraw %}
+{% endcomment %}
+
+{% assign profile = include.profile | default: site.data.nav-profile %}
+{% assign shape = include.shape | default: 'rounded' %}
+{% assign width = include.width | default: 'content' %}
+{% assign level = include.level | default: 1 %}
+
+{::nomarkdown}
+{% if profile and profile.name %}
+  <section class="home-profile home-profile--{{ shape }} home-profile--{{ width }}">
+    <div class="home-profile-inner">
+      {% if profile.image_url %}
+        {% capture profile_image %}{% include helpers/image-path.html image-path=profile.image_url %}{% endcapture %}
+        <img class="home-profile-photo" src="{{ profile_image | strip }}" alt="{{ profile.alt_text | default: profile.name | escape }}">
+      {% endif %}
+
+      <div class="home-profile-text">
+        {% if level == 2 %}
+          <h2 class="home-profile-name">{{ profile.name }}</h2>
+        {% else %}
+          <h1 class="home-profile-name">{{ profile.name }}</h1>
+        {% endif %}
+
+        {% if profile.role %}<p class="home-profile-role">{{ profile.role }}</p>{% endif %}
+        {% if profile.description %}<div class="home-profile-bio">{{ profile.description | markdownify }}</div>{% endif %}
+
+        {% if profile.links %}
+          <ul class="home-profile-links">
+            {% for link in profile.links %}
+              {% capture link_url %}{% include helpers/link-path.html link=link.url %}{% endcapture %}
+              <li>
+                <a href="{{ link_url | strip }}"{% if link.url contains '://' %} target="_blank" rel="noopener noreferrer"{% endif %}>
+                  {% if link.icon %}<i class="{{ link.icon }}" aria-hidden="true"></i>{% endif %}
+                  {{ link.title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+{% else %}
+  <div class="xanthan-warning">
+    profile-intro needs a profile with a name — either a `profile` parameter or
+    a `name:` in _data/nav-profile.yml.
+  </div>
+{% endif %}
+{:/nomarkdown}

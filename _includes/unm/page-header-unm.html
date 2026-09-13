@@ -1,0 +1,12 @@
+{% comment %}
+  Extend the current Xanthan head without duplicating its stylesheet list.
+  UNM's scoped stylesheet loads last. Only its font stylesheet is shared with
+  unm.edu; its Bootstrap and global homepage CSS must not be imported.
+{% endcomment %}
+{% capture xanthan_head %}{% include html/html-head.html %}{% endcapture %}
+{% capture unm_head_end %}
+  <link rel="stylesheet" href="https://webcore.unm.edu/v2/fonts/unm-fonts.css">
+  <link rel="stylesheet" href="{{ '/assets/css/unm.css' | relative_url }}">
+</head>
+{% endcapture %}
+{{ xanthan_head | replace: '</head>', unm_head_end }}
