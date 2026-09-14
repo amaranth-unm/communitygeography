@@ -37,6 +37,12 @@ bundle exec ruby scripts/check-site.rb _site
 
 University analytics runs only in production builds. The original university Google Tag Manager ID is preserved in `_config.yml`; remove it to disable it. Optional separate Google Analytics is blank.
 
+## Making images smaller
+
+Use **Actions → Optimize Images → Run workflow** on GitHub. Leave **Actually change the files** unticked to see measured savings first. The default folder `.` covers the migrated images throughout the repository; choose a smaller folder for a focused batch. Applying commits smaller images with their existing filenames and formats, then starts the Pages build.
+
+See the [image-optimization guide](migration/image-optimization.md) for settings, local use, and the adaptations from Xanthan. This works with the current image markup; no conversion to image includes is needed.
+
 ## Publishing
 
 GitHub Pages address: [amaranth.unm.edu/communitygeography](https://amaranth.unm.edu/communitygeography/), using the organization's existing custom domain.
@@ -59,6 +65,8 @@ When UNM is ready to switch:
 The preserved `.html` URLs allow existing links to continue working after the switch. No `CNAME` file is committed during staging.
 
 ## Migration record
+
+See the [three-tier cleanup roadmap](migration/cleanup-roadmap.md) for the reusable process after a basic Cascade conversion: strict cleanup, consistent presentation and files, then improvements to ongoing maintenance.
 
 See `migration/manifest.json` for source URLs, destination files, downloaded assets, and unavailable source links; see `migration/README.md` for review notes. The source capture is dated September 12, 2026. Original copy and dates have been preserved, including historical announcements and inconsistencies that need an editorial decision.
 
