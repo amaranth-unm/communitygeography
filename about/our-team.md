@@ -8,7 +8,7 @@ section_url: "/about/index.html"
 
 # Our Team
 
-## Director 
+## Director
 
 *Melinda Benson, Regents' Professor, Geography and Environmental Studies  *
 
